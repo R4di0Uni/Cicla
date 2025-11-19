@@ -1,17 +1,17 @@
 # Node modules
-server/node_modules/
+iot/server/node_modules/
 
 # Logs
-server/logs/
+iot/server/logs/
 *.log
 
 # Build output
-server/dist/
-server/build/
+iot/server/dist/
+iot/server/build/
 
 # Environment variables
-server/.env
+iot/server/.env
 
 # Temporary files
-server/tmp/
-server/.cache/
+iot/server/tmp/
+iot/server/.cache/
