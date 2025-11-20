@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MQTT broker
-const mqttClient = mqtt.connect("mqtt://BROKER_IP");
+const mqttClient = mqtt.connect("mqtt://localhost");
 
 // Store latest sensor packet from ESP32
 let latestSensors = {
