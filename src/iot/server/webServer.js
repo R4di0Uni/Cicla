@@ -32,7 +32,7 @@ const Sensor = mongoose.model("Sensor", sensorSchema);
 // ----------------------
 // MQTT
 // ----------------------
-const mqttClient = mqtt.connect("mqtt://10.106.114.177");
+const mqttClient = mqtt.connect("mqtt://10.167.90.177");
 
 let latestSensors = {
   reed: "--",

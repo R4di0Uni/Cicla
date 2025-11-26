@@ -4,9 +4,9 @@
 #include "HX711.h"
 #include <MPU6050.h>
 
-const char* ssid = "YourWiFi";
-const char* password = "YourPass";
-const char* mqtt_server = "192.168.x.x";
+const char* ssid = "Redmi 14C";
+const char* password = "korekara";
+const char* mqtt_server = "10.106.114.177";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
