@@ -49,6 +49,8 @@ void reconnect() {
 }
 
 void setup() {
+
+  const balancing_factor = -462.67;
   Serial.begin(115200);
 
   pinMode(BUZZER_PIN, OUTPUT);
@@ -66,10 +68,11 @@ void setup() {
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
-  scale.begin(HX_DT, HX_SCK);
-  scale.set_scale();  
-  scale.tare();      
-  Serial.println("HX711 initialized");
+ scale.begin(HX_DT, HX_SCK);
+
+scale.set_scale(balancing_factor);   
+scale.tare();               
+Serial.println("HX711 calibrated");
 
   Wire.begin(SDA_PIN, SCL_PIN, 400000);
   mpu.initialize();

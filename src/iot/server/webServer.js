@@ -1,15 +1,39 @@
 const express = require("express");
 const cors = require("cors");
 const mqtt = require("mqtt");
+const mongoose = require("mongoose");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to MQTT broker
+// ----------------------
+// MongoDB Connection
+// ----------------------
+mongoose.connect("mongodb://localhost:27017/esp32")
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.error("MongoDB error:", err));
+
+
+const sensorSchema = new mongoose.Schema({
+  reed: String,
+  weight: Number,
+  ax: Number,
+  ay: Number,
+  az: Number,
+  gx: Number,
+  gy: Number,
+  gz: Number,
+  timestamp: { type: Date, default: Date.now }
+});
+
+const Sensor = mongoose.model("Sensor", sensorSchema);
+
+// ----------------------
+// MQTT
+// ----------------------
 const mqttClient = mqtt.connect("mqtt://10.106.114.177");
 
-// Store latest sensor packet from ESP32
 let latestSensors = {
   reed: "--",
   weight: "--",
@@ -21,31 +45,34 @@ let latestSensors = {
   gz: "--"
 };
 
-// When connected to MQTT
 mqttClient.on("connect", () => {
   console.log("Connected to MQTT");
   mqttClient.subscribe("esp32/sensors");
 });
 
-// Handle incoming MQTT messages
-mqttClient.on("message", (topic, message) => {
+mqttClient.on("message", async (topic, message) => {
   if (topic === "esp32/sensors") {
     try {
-      // Parse JSON from ESP32
       const data = JSON.parse(message.toString());
       latestSensors = data;
+
+      // Save the packet in MongoDB
+      await Sensor.create(data);
+
+      console.log("Saved to MongoDB:", data);
     } catch (e) {
-      console.log("Invalid JSON from ESP32:", message.toString());
+      console.log("Invalid JSON:", message.toString());
     }
   }
 });
 
-// REST endpoint for frontend
+// ----------------------
+// REST API
+// ----------------------
 app.get("/sensors", (req, res) => {
   res.json(latestSensors);
 });
 
-// Send command to ESP32 via MQTT
 app.post("/command", (req, res) => {
   const cmd = req.body.cmd;
   mqttClient.publish("esp32/cmd", cmd);
