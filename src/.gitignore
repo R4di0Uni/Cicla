@@ -1,5 +1,7 @@
 # Node modules
 iot/server/node_modules/
+iot/AI/node_modules/
+
 
 # Logs
 iot/server/logs/
