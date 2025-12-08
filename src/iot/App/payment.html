@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    // ---- Default booking data (React replacement) ----
+    const bookingData = {
+      cubeName: 'Cicla Box – Avenida da Liberdade',
+      slotNumber: 3,
+      day: 'Mon',
+      time: '10h',
+      duration: 2,
+      totalPrice: 1.00,
+    };
+
+    // ---- Handle card formatting ----
+    function formatCardInput(e) {
+      let { name, value } = e.target;
+
+      if (name === "number") {
+        value = value.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
+      }
+      if (name === "expiry") {
+        value = value.replace(/\D/g, "").slice(0, 4);
+        if (value.length >= 2) value = value.slice(0, 2) + "/" + value.slice(2);
+      }
+      if (name === "cvv") {
+        value = value.replace(/\D/g, "").slice(0, 3);
+      }
+
+      e.target.value = value;
+    }
+
+    function toggleCheckbox() {
+      const box = document.getElementById("saveCardBox");
+      box.classList.toggle("bg-green-500");
+      box.classList.toggle("border-green-500");
+    }
+
+    function submitPayment(e) {
+      e.preventDefault();
+      console.log("Payment complete. Redirect to confirmation.");
+      window.location.href = "/confirmation.html";
+    }
+  </script>
+
+  <style>
+    .gradient-main {
+      background: linear-gradient(135deg, #d2e8d1 0%, #ffffff 100%);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- mobile frame emulator -->
+  <div class="max-w-sm mx-auto min-h-screen bg-white shadow-xl rounded-xl overflow-hidden">
+
+    <!-- HEADER -->
+    <div class="relative gradient-main pb-6">
+      <div class="px-6 pt-12">
+
+        <div class="flex items-center justify-between mb-4">
+          <a href="javascript:history.back()" class="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center hover:bg-white/50 transition">
+            ←
+          </a>
+
+          <!-- placeholder cicla logo -->
+          <div class="text-xl font-bold text-green-700 tracking-wider">
+            CICLA
+          </div>
+        </div>
+
+        <h1 class="text-2xl font-bold text-green-900 tracking-wide">Payment</h1>
+        <p class="text-green-900/70 text-sm">Confirm your booking</p>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="px-6 py-6">
+
+      <!-- Booking Summary -->
+      <div class="bg-gray-200/50 rounded-2xl p-4 mb-6">
+        <h2 class="text-sm font-bold text-gray-800 mb-3">Booking Summary</h2>
+
+        <div class="space-y-3">
+
+          <!-- Location -->
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-lime-300/50 flex items-center justify-center">📍</div>
+            <div>
+              <p class="font-bold text-gray-800 text-sm">
+                Cicla Box – Avenida da Liberdade
+              </p>
+              <p class="text-xs text-gray-500">Slot #3</p>
+            </div>
+          </div>
+
+          <!-- Time -->
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-lime-300/50 flex items-center justify-center">⏱️</div>
+            <div>
+              <p class="font-bold text-gray-800 text-sm">Mon, 10h</p>
+              <p class="text-xs text-gray-500">2 hour(s)</p>
+            </div>
+          </div>
+
+          <div class="h-px bg-gray-300 my-2"></div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-500">Total</span>
+            <span class="text-xl font-bold text-green-900">€1.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Form -->
+      <form onsubmit="submitPayment(event)" class="space-y-4">
+
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-green-700">💳</span>
+          <h2 class="text-sm font-bold text-gray-800">Card Details</h2>
+        </div>
+
+        <!-- name -->
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-gray-500 pl-1">Cardholder Name</label>
+          <input name="name" required placeholder="Name on card" class="w-full p-2 border rounded-lg" />
+        </div>
+
+        <!-- number -->
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-gray-500 pl-1">Card Number</label>
+          <input name="number" required placeholder="1234 5678 9012 3456" oninput="formatCardInput(event)" class="w-full p-2 border rounded-lg" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- expiry -->
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-gray-500 pl-1">Expiry</label>
+            <input name="expiry" required placeholder="MM/YY" oninput="formatCardInput(event)" class="w-full p-2 border rounded-lg" />
+          </div>
+
+          <!-- cvv -->
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-gray-500 pl-1">CVV</label>
+            <input name="cvv" type="password" required placeholder="•••" oninput="formatCardInput(event)" class="w-full p-2 border rounded-lg" />
+          </div>
+        </div>
+
+        <!-- Save card -->
+        <label class="flex items-center gap-3 py-3 cursor-pointer" onclick="toggleCheckbox()">
+          <div id="saveCardBox"
+               class="w-6 h-6 rounded-lg border-2 border-gray-300 bg-white flex items-center justify-center transition-colors">
+          </div>
+          <span class="text-sm text-gray-800">Save this card for future bookings</span>
+        </label>
+
+        <!-- SSL info -->
+        <div class="flex items-center gap-2 text-xs text-gray-500 bg-gray-200/50 rounded-xl p-3">
+          🔒 <span>Your payment is secured with SSL encryption</span>
+        </div>
+
+        <!-- Pay button -->
+        <button type="submit" class="w-full mt-6 bg-green-900 text-white py-3 rounded-xl font-bold">
+          PAY €1.00
+        </button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

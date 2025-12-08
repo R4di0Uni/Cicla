@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300">
+
+  <div class="max-w-md mx-auto min-h-screen bg-white shadow-xl relative overflow-hidden">
+
+    <!-- Decorative shapes -->
+    <div class="absolute -top-4 -left-4 w-36 h-36 bg-black/10 rounded-lg blur-xl"></div>
+    <div class="absolute -top-12 -right-10 w-56 h-80 bg-black/10 rounded-3xl blur-2xl"></div>
+    <div class="absolute bottom-40 -left-4 w-56 h-12 bg-black/10 rounded-full blur-md"></div>
+    <div class="absolute -bottom-16 -right-10 w-40 h-72 bg-black/10 rounded-xl rotate-180 blur-xl"></div>
+
+    <!-- Main structure -->
+    <div class="relative flex flex-col min-h-screen px-8 py-14">
+
+      <!-- Logo section -->
+      <div class="flex-1 flex flex-col items-center justify-center text-center">
+        
+        <!-- Placeholder floating logo -->
+        <div class="mb-10 animate-bounce">
+          <div class="w-32 h-32 bg-gray-800 rounded-full"></div>
+        </div>
+
+        <p class="text-xl font-bold text-gray-800 tracking-wide max-w-xs">
+          Park your bike with safety
+        </p>
+      </div>
+
+      <!-- Buttons -->
+      <div class="space-y-4 pb-10">
+            <a href="signIn.html" 
+            class="block w-full py-3 bg-black text-white text-lg font-bold text-center rounded-lg hover:bg-gray-900">
+            Sign in
+        </a>
+
+        <a 
+        href="signUp.html" 
+        class="w-full block text-center py-3 border-2 border-black text-black text-lg font-bold rounded-lg hover:bg-black hover:text-white transition"
+        >   
+        Sign up
+        </a>
+
+      </div>
+
+      <!-- Bottom soft wave -->
+      <div class="absolute left-0 bottom-0 w-full h-20 bg-gray-200/50 rounded-t-full blur-lg"></div>
+    </div>
+
+  </div>
+
+</body>
+</html>

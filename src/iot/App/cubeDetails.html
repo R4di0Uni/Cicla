@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cicla – Parking</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body { background: #f9fafb; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gray-100 flex justify-center p-4">
+
+  <!-- FRAME -->
+  <div class="bg-white w-full max-w-sm rounded-2xl shadow-lg overflow-hidden">
+
+    <!-- HEADER -->
+    <div class="bg-gradient-to-br from-green-100 to-green-300 pb-6 relative">
+      
+      <div class="px-6 pt-10">
+        <div class="flex items-center justify-between mb-4">
+          <button onclick="history.back()" class="w-10 h-10 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center hover:bg-white/60 transition">
+            <!-- Arrow Left -->
+            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7l7-7" />
+            </svg>
+          </button>
+
+          <!-- Logo -->
+          <h1 class="text-lg font-bold text-gray-800">Cicla</h1>
+        </div>
+
+        <h1 class="text-2xl font-extrabold text-gray-900 mb-1 tracking-wide">PARKING</h1>
+        <div class="flex items-center gap-2 text-gray-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21s8-7.333 8-13A8 8 0 1 0 4 8c0 5.667 8 13 8 13z" />
+          </svg>
+          <span class="text-sm">Avenida da Liberdade 120</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="px-6 py-6 space-y-6">
+
+      <!-- SLOT SELECTION -->
+      <div>
+        <h2 class="text-sm font-bold text-gray-800 mb-3">Choose a parking spot</h2>
+
+        <div id="slotGrid" class="grid grid-cols-4 gap-2"></div>
+
+        <div class="flex items-center gap-4 mt-3">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded bg-green-200 border border-green-300"></div>
+            <span class="text-xs text-gray-500">Available</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded bg-gray-300 border border-gray-400"></div>
+            <span class="text-xs text-gray-500">Occupied</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY SELECTION -->
+      <div>
+        <h2 class="text-sm font-bold text-gray-800 mb-3">Day of the week</h2>
+        <div id="dayButtons" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- TIME SELECTION -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-bold text-gray-800">Pick available timeslot</h2>
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6 2a9 9 0 1 1 -18 0a9 9 0 0 1 18 0z" />
+          </svg>
+        </div>
+
+        <div id="timeButtons" class="grid grid-cols-4 gap-2"></div>
+      </div>
+
+      <!-- DURATION -->
+      <div>
+        <h2 class="text-sm font-bold text-gray-800 mb-3">Duration (hours)</h2>
+        <div id="durationButtons" class="flex gap-2"></div>
+      </div>
+
+      <!-- PRICE SUMMARY -->
+      <div class="bg-green-100 rounded-2xl p-4 flex items-center justify-between">
+        <div>
+          <span class="text-sm text-gray-600">Total price</span>
+          <p id="totalPrice" class="text-2xl font-extrabold text-gray-900">€0.50</p>
+        </div>
+
+        <button
+          id="reserveBtn"
+          class="px-4 py-3 rounded-xl font-bold bg-gray-400 text-white cursor-not-allowed"
+          disabled
+        >
+          BOOK PLACE
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // -------------------------
+    // STATE
+    // -------------------------
+
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const times = ['08h','09h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h'];
+
+    const slotsData = Array.from({ length: 12 }, (_, i) => ({
+      id: i + 1,
+      occupied: [2, 5, 7, 11].includes(i + 1),
+    }));
+
+    let selectedDay = 'Mon';
+    let selectedTime = null;
+    let selectedDuration = 1;
+    let selectedSlot = null;
+
+    const pricePerHour = 0.50;
+
+    // -------------------------
+    // DOM RENDERING HELPERS
+    // -------------------------
+
+    function renderSlots() {
+      const grid = document.getElementById("slotGrid");
+      grid.innerHTML = "";
+
+      slotsData.forEach(slot => {
+        const btn = document.createElement("button");
+        btn.className =
+          "aspect-square rounded-xl flex flex-col items-center justify-center transition";
+
+        if (slot.occupied) {
+          btn.className += " bg-gray-300 border border-gray-400 opacity-50 cursor-not-allowed";
+          btn.disabled = true;
+        } else if (selectedSlot === slot.id) {
+          btn.className += " bg-green-500 text-white border-2 border-green-700 scale-105";
+        } else {
+          btn.className += " bg-green-200 border border-green-300 hover:bg-green-300";
+        }
+
+        btn.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" 
+          viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M5.5 17a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7zm13 0a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7zM5.5 17h13M12 17l-3-7h6l-3 7z"/>
+          </svg>
+          <span class="text-xs font-bold mt-1">${slot.id}</span>
+        `;
+
+        btn.onclick = () => {
+          selectedSlot = slot.id;
+          updateUI();
+        };
+
+        grid.appendChild(btn);
+      });
+    }
+
+    function renderDays() {
+      const wrap = document.getElementById("dayButtons");
+      wrap.innerHTML = "";
+      days.forEach(day => {
+        const btn = document.createElement("button");
+        btn.className =
+          (selectedDay === day)
+            ? "px-4 py-2 rounded-lg bg-gray-900 text-white font-bold"
+            : "px-4 py-2 rounded-lg bg-gray-200 text-gray-800 font-bold hover:bg-gray-300";
+
+        btn.textContent = day;
+        btn.onclick = () => { selectedDay = day; updateUI(); };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function renderTimes() {
+      const wrap = document.getElementById("timeButtons");
+      wrap.innerHTML = "";
+      times.forEach(time => {
+        const btn = document.createElement("button");
+        btn.className =
+          (selectedTime === time)
+            ? "py-2 rounded-lg bg-green-300 text-gray-900 font-bold"
+            : "py-2 rounded-lg bg-gray-200 text-gray-800 font-bold hover:bg-gray-300";
+
+        btn.textContent = time;
+        btn.onclick = () => { selectedTime = time; updateUI(); };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function renderDuration() {
+      const wrap = document.getElementById("durationButtons");
+      wrap.innerHTML = "";
+
+      [1,2,3,4,5].forEach(hours => {
+        const btn = document.createElement("button");
+        btn.className =
+          (selectedDuration === hours)
+            ? "flex-1 py-3 rounded-lg bg-green-400 text-white font-bold"
+            : "flex-1 py-3 rounded-lg bg-gray-200 text-gray-800 font-bold hover:bg-gray-300";
+
+        btn.textContent = hours + "h";
+        btn.onclick = () => { selectedDuration = hours; updateUI(); };
+
+        wrap.appendChild(btn);
+      });
+    }
+
+    function updatePrice() {
+      const total = (selectedDuration * pricePerHour).toFixed(2);
+      document.getElementById("totalPrice").innerText = "€" + total;
+    }
+
+    function updateReserveButton() {
+      const btn = document.getElementById("reserveBtn");
+
+      if (selectedSlot && selectedTime) {
+        btn.disabled = false;
+        btn.className = "px-4 py-3 rounded-xl font-bold bg-green-600 text-white";
+        btn.onclick = () => {
+          alert(`Booking Complete!
+Slot: ${selectedSlot}
+Day: ${selectedDay}
+Time: ${selectedTime}
+Duration: ${selectedDuration}h
+Total: €${(selectedDuration * pricePerHour).toFixed(2)}
+`);
+        };
+      } else {
+        btn.disabled = true;
+        btn.className = "px-4 py-3 rounded-xl font-bold bg-gray-400 text-white cursor-not-allowed";
+      }
+    }
+
+    function updateUI() {
+      renderSlots();
+      renderDays();
+      renderTimes();
+      renderDuration();
+      updatePrice();
+      updateReserveButton();
+    }
+
+    // INITIAL RENDER
+    updateUI();
+
+  </script>
+
+</body>
+</html>

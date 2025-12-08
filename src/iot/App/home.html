@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cicla Map</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .animate-pulse-glow {
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(255,87,87,0.6); }
+      100% { box-shadow: 0 0 0 12px rgba(255,87,87,0); }
+    }
+  </style>
+</head>
+
+<body class="bg-lime-200">
+
+<div class="relative min-h-screen overflow-hidden">
+
+  <!-- Background -->
+  <div class="absolute inset-0 bg-gradient-to-b from-lime-300/50 to-green-300/30"></div>
+
+  <!-- Map Grid -->
+  <svg class="absolute inset-0 w-full h-full opacity-30 text-gray-700">
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#grid)" />
+  </svg>
+
+  <!-- USER LOCATION PULSE -->
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+    <div class="w-6 h-6 rounded-full bg-red-400 border-4 border-white shadow-lg animate-pulse-glow"></div>
+  </div>
+
+  <!-- Map Pins Container -->
+  <div id="pins"></div>
+
+  <!-- Top Bar -->
+  <div class="relative z-20 px-4 pt-10 pb-4 flex items-center justify-between">
+    <h1 class="font-bold text-xl text-green-800">CICLA</h1>
+
+    <div class="flex items-center gap-2">
+      <div class="px-3 py-1.5 rounded-full bg-white shadow flex items-center gap-2">
+        <span class="text-green-700 font-semibold">📍 Lisboa</span>
+      </div>
+
+      <button class="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center">
+        <span class="text-gray-800 text-lg">👤</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="relative z-20 px-4 flex gap-2">
+    <button id="filterNearest"
+            class="px-4 py-2 rounded-xl bg-green-400 text-white font-bold">
+      📍 Nearest
+    </button>
+    <button id="filterAvailable"
+            class="px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border border-gray-300">
+      🔍 Most available
+    </button>
+  </div>
+
+  <!-- Bottom Sheet -->
+  <div id="sheet"
+       class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-xl z-30 transition-all duration-300 translate-y-[60%]">
+    <div id="sheetContent" class="p-6"></div>
+  </div>
+
+</div>
+
+<script>
+  const cubes = [
+    { id:"1", name:"Cicla Box – Avenida da Liberdade", address:"Av. da Liberdade 120", distance:"350m", totalSlots:12, freeSlots:5, pricePerHour:0.50 },
+    { id:"2", name:"Cicla Box – Rossio", address:"Praça Dom Pedro IV", distance:"800m", totalSlots:12, freeSlots:2, pricePerHour:0.50 },
+    { id:"3", name:"Cicla Box – Cais do Sodré", address:"Praça Duque da Terceira", distance:"1.2km", totalSlots:12, freeSlots:8, pricePerHour:0.50 },
+    { id:"4", name:"Cicla Box – Marquês de Pombal", address:"Praça Marquês de Pombal", distance:"1.5km", totalSlots:12, freeSlots:0, pricePerHour:0.50 },
+  ];
+
+  let filterMode = "nearest";
+  let selectedCube = null;
+
+  function sortCubes() {
+    if (filterMode === "available")
+      return [...cubes].sort((a,b) => b.freeSlots - a.freeSlots);
+
+    return [...cubes].sort((a,b) => parseFloat(a.distance) - parseFloat(b.distance));
+  }
+
+  function renderList() {
+    let html = `
+      <h3 class="text-lg font-bold mb-4">Nearby Cicla Boxes</h3>
+      <div class="space-y-3 max-h-48 overflow-y-auto">
+    `;
+
+    sortCubes().forEach(c => {
+      html += `
+        <button onclick='showCube(${c.id})'
+          class="w-full flex items-center justify-between p-3 bg-gray-100 rounded-xl hover:bg-gray-200">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center ${c.freeSlots? "bg-green-500":"bg-gray-400"}">
+              🚲
+            </div>
+            <div>
+              <p class="font-bold">${c.name}</p>
+              <p class="text-sm text-gray-500">${c.freeSlots} slots free</p>
+            </div>
+          </div>
+          <span class="font-bold text-green-600">${c.distance}</span>
+        </button>
+      `;
+    });
+
+    html += `</div>`;
+    sheetContent.innerHTML = html;
+  }
+
+  function showCubeByObj(cube) {
+    selectedCube = cube;
+    sheet.classList.remove("translate-y-[60%]");
+
+    sheetContent.innerHTML = `
+      <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
+
+      <h3 class="text-lg font-bold">${cube.name}</h3>
+      <p class="text-sm text-gray-500 mb-3">📍 ${cube.address}</p>
+
+      <div class="flex gap-4 mb-6">
+        <div class="flex-1 bg-gray-100 rounded-xl p-3 text-center">
+          <div class="text-2xl font-bold">${cube.freeSlots}</div>
+          <div class="text-xs text-gray-500">free slots</div>
+        </div>
+        <div class="flex-1 bg-gray-100 rounded-xl p-3 text-center">
+          <div class="text-2xl font-bold">${cube.totalSlots}</div>
+          <div class="text-xs text-gray-500">total slots</div>
+        </div>
+        <div class="flex-1 bg-lime-200 rounded-xl p-3 text-center">
+          <div class="text-2xl font-bold">€${cube.pricePerHour.toFixed(2)}</div>
+          <div class="text-xs text-gray-600">per hour</div>
+        </div>
+      </div>
+
+      <button class="w-full py-3 rounded-xl text-white font-bold
+        ${cube.freeSlots? "bg-green-600":"bg-gray-400"}"
+        ${cube.freeSlots === 0 ? "disabled" : ""}>
+        ${cube.freeSlots? "SELECT SLOT":"NO SLOTS AVAILABLE"}
+      </button>
+    `;
+  }
+
+  function showCube(id) {
+    const cube = cubes.find(c => c.id == id);
+    showCubeByObj(cube);
+  }
+
+  // Render pins
+  const pins = document.getElementById("pins");
+  cubes.forEach((cube,i)=>{
+    const el = document.createElement("button");
+    el.className = "absolute transform -translate-x-1/2 -translate-y-1/2 z-10 hover:scale-110 transition";
+    el.style.top = (25 + i*15) + "%";
+    el.style.left = (20 + i*18) + "%";
+    el.onclick = () => showCubeByObj(cube);
+
+    el.innerHTML = `
+      <div class="relative ${cube.freeSlots? "":"opacity-50"}">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center shadow
+          ${cube.freeSlots? "bg-green-500":"bg-gray-400"}">
+          🚲
+        </div>
+        <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white text-xs font-bold flex items-center justify-center">
+          ${cube.freeSlots}
+        </span>
+      </div>
+    `;
+    pins.appendChild(el);
+  });
+
+  // Filters
+  document.getElementById("filterNearest").onclick = () => {
+    filterMode = "nearest";
+    document.getElementById("filterNearest").className = "px-4 py-2 rounded-xl bg-green-400 text-white font-bold";
+    document.getElementById("filterAvailable").className = "px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border border-gray-300";
+    renderList();
+  };
+
+  document.getElementById("filterAvailable").onclick = () => {
+    filterMode = "available";
+    document.getElementById("filterAvailable").className = "px-4 py-2 rounded-xl bg-green-400 text-white font-bold";
+    document.getElementById("filterNearest").className = "px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border border-gray-300";
+    renderList();
+  };
+
+  renderList();
+</script>
+
+</body>
+</html>

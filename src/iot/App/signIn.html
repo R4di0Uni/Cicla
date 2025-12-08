@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Heroicons -->
+  <script src="https://unpkg.com/heroicons@2.1.1/outline/index.js"></script>
+
+  <style>
+    .gradient-main {
+      background: linear-gradient(to bottom right, #d9f99d, #86efac);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 flex justify-center">
+  <div class="w-full max-w-sm min-h-screen bg-white shadow-lg">
+
+    <div class="relative min-h-screen gradient-main p-8 pt-16">
+
+      <!-- Top decorative shapes replaced with simple circles -->
+      <div class="absolute top-4 left-4 w-16 h-16 bg-white/20 rounded-full"></div>
+      <div class="absolute top-10 right-10 w-24 h-24 bg-white/10 rounded-full"></div>
+      <div class="absolute bottom-40 left-0 w-32 h-4 bg-white/20 rounded-full"></div>
+      <div class="absolute bottom-4 right-4 w-20 h-40 bg-white/10 rounded-xl rotate-12"></div>
+
+      <!-- CONTENT -->
+      <div class="relative flex flex-col min-h-screen">
+
+        <!-- Header logo -->
+        <div class="flex flex-col items-center mt-10 mb-12">
+          <div class="w-20 h-20 bg-white rounded-full shadow flex items-center justify-center">
+            <!-- Simple logo replacement -->
+            <svg class="w-10 h-10 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                d="M12 6v6l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-800 text-center leading-tight mt-6">
+            PARK YOUR BIKE<br/>WITH SAFETY
+          </h1>
+        </div>
+
+        <!-- FORM -->
+        <form class="space-y-6" onsubmit="event.preventDefault(); window.location.href='home.html'">
+
+          <!-- Username -->
+          <div class="space-y-1">
+            <label class="text-sm font-bold text-gray-800 pl-1">username</label>
+            <input
+              type="text"
+              required
+              placeholder="Enter your username or email"
+              class="w-full px-4 py-3 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="space-y-1">
+            <label class="text-sm font-bold text-gray-800 pl-1">password</label>
+
+            <div class="relative">
+              <input
+                id="passwordField"
+                type="password"
+                required
+                placeholder="••••••••"
+                class="w-full px-4 py-3 rounded-xl border border-gray-400 pr-12 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+              />
+
+              <button
+                id="togglePassword"
+                type="button"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+              >
+                <svg id="eyeClosed" class="w-5 h-5 block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 3l18 18M10.477 10.477A3 3 0 0113.5 13.5M7.05 7.05A9.953 9.953 0 0112 5c4.418 0 8 3.582 8 8a7.977 7.977 0 01-.788 3.447m-2.272 2.272A9.953 9.953 0 0112 19c-4.418 0-8-3.582-8-8 0-1.67.507-3.224 1.389-4.528" />
+                </svg>
+
+                <svg id="eyeOpen" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zm10-3a3 3 0 110 6 3 3 0 010-6z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Forgot -->
+          <button type="button" class="text-sm text-gray-700 underline hover:text-black">
+            forgot password or username?
+          </button>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            class="w-full py-3 rounded-xl text-center bg-green-500 text-white text-lg font-bold hover:bg-green-600"
+          >
+            SIGN IN
+          </button>
+
+        </form>
+
+        <!-- FOOTER -->
+        <div class="mt-10 text-center pb-10">
+          <p class="text-sm text-gray-800">
+            Don't have an account?
+            <a href="signup.html" class="font-bold underline">
+              Sign up
+            </a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Password toggle -->
+  <script>
+    const pwd = document.getElementById("passwordField");
+    const toggle = document.getElementById("togglePassword");
+    const eyeOpen = document.getElementById("eyeOpen");
+    const eyeClosed = document.getElementById("eyeClosed");
+
+    toggle.addEventListener("click", () => {
+      const isHidden = pwd.type === "password";
+      pwd.type = isHidden ? "text" : "password";
+      eyeOpen.classList.toggle("hidden", !isHidden);
+      eyeClosed.classList.toggle("hidden", isHidden);
+    });
+  </script>
+
+</body>
+</html>

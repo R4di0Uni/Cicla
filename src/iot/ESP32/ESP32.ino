@@ -6,7 +6,7 @@
 
 const char* ssid = "Redmi 14C";
 const char* password = "korekara";
-const char* mqtt_server = "10.106.114.177";
+const char* mqtt_server = "172.25.1.177";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -14,11 +14,11 @@ PubSubClient client(espClient);
 #define BUZZER_PIN 16
 #define REED_PIN   17
 
-#define HX_SCK 15
-#define HX_DT  2
+#define HX_SCK 19
+#define HX_DT  23
 
-#define SDA_PIN 27
-#define SCL_PIN 14
+#define SDA_PIN 21
+#define SCL_PIN 22
 
 HX711 scale;
 MPU6050 mpu;
@@ -50,7 +50,7 @@ void reconnect() {
 
 void setup() {
 
-  const balancing_factor = -462.67;
+  int balancing_factor = -462.67;
   Serial.begin(115200);
 
   pinMode(BUZZER_PIN, OUTPUT);

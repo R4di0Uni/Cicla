@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Heroicons -->
+  <script src="https://unpkg.com/heroicons@2.1.1/outline/index.js"></script>
+
+  <style>
+    /* Simple gradient replacement */
+    .gradient-main {
+      background: linear-gradient(to bottom right, #d9f99d, #86efac);
+    }
+    .gradient-button {
+      background: linear-gradient(to right, #bef264, #86efac);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 flex justify-center">
+  <div class="w-full max-w-sm bg-white min-h-screen shadow-lg relative">
+
+    <!-- Header -->
+    <div class="relative gradient-main pb-10 pt-12 px-6">
+      <div class="flex items-center justify-between mb-6">
+        <button class="w-10 h-10 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center">
+          <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <h1 class="font-bold text-gray-800 text-lg">Cicla</h1>
+      </div>
+
+      <!-- Profile info -->
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-full bg-white shadow flex items-center justify-center">
+          <svg class="w-8 h-8 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A8 8 0 1116.97 5.93M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-gray-800">João Silva</h1>
+          <p class="text-sm text-gray-700">joao.silva@email.com</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="px-6 -mt-6">
+      <div class="bg-white rounded-2xl shadow p-4">
+        <div class="grid grid-cols-3 gap-4 text-center">
+
+          <!-- My Bikes -->
+          <button class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-100">
+            <div class="w-10 h-10 rounded-full bg-lime-300 flex items-center justify-center">
+              <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  d="M5.5 17a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm13 0a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM5.5 14.5H10l2-3h4M12 7l2 4m-2-4H9" />
+              </svg>
+            </div>
+            <span class="text-xs font-bold text-gray-800">My Bikes</span>
+          </button>
+
+          <!-- Payment -->
+          <button class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-100">
+            <div class="w-10 h-10 rounded-full bg-lime-300 flex items-center justify-center">
+              <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 10h18M3 6h18M3 14h18M3 18h18" />
+              </svg>
+            </div>
+            <span class="text-xs font-bold text-gray-800">Payment</span>
+          </button>
+
+          <!-- Settings -->
+          <button class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-100">
+            <div class="w-10 h-10 rounded-full bg-lime-300 flex items-center justify-center">
+              <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 6V4m0 16v-2m8-6h2M4 12H2m14.95 7.95l1.414 1.414M7.636 7.636L6.222 6.222m12.728 0l1.414 1.414M7.636 16.364l-1.414 1.414" />
+              </svg>
+            </div>
+            <span class="text-xs font-bold text-gray-800">Settings</span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="px-6 mt-6">
+
+      <div class="flex gap-2 mb-4">
+        <button class="flex-1 py-2 rounded-xl gradient-button text-gray-900 font-bold">
+          Upcoming
+        </button>
+        <button class="flex-1 py-2 rounded-xl bg-gray-200 text-gray-500 font-bold">
+          Past
+        </button>
+      </div>
+
+      <!-- Booking list -->
+      <div class="space-y-3 pb-28">
+
+        <!-- Booking 1 -->
+        <div class="bg-gray-100 rounded-2xl p-4">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    d="M5.5 17a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm13 0a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM5.5 14.5H10l2-3h4M12 7l2 4m-2-4H9" />
+                </svg>
+              </div>
+              <div>
+                <p class="font-bold text-gray-800 text-sm">Cicla Box – Avenida da Liberdade</p>
+                <p class="text-xs text-gray-500">Slot #3</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-green-700 bg-green-200 px-2 py-1 rounded-full">
+              Active
+            </span>
+          </div>
+
+          <div class="flex items-center gap-4 text-xs text-gray-600">
+            <div class="flex items-center gap-1">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  d="M8 7V3m8 4V3m-9 9h10m-11 9h12a2 2 0 0 0 2-2V7H4v14a2 2 0 0 0 2 2z" />
+              </svg>
+              Dec 6, 2024
+            </div>
+            <div class="flex items-center gap-1">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 6v6l4 2" />
+              </svg>
+              10h • 2h
+            </div>
+            <div class="ml-auto font-bold text-gray-800">€1.00</div>
+          </div>
+
+          <div class="mt-3 pt-3 border-t flex gap-2">
+            <button class="flex-1 border border-gray-400 text-gray-900 py-1 rounded-lg text-sm font-bold">
+              View Code
+            </button>
+            <button class="flex-1 border border-red-300 text-red-600 py-1 rounded-lg text-sm font-bold">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t px-6 py-3 max-w-sm mx-auto">
+      <div class="flex items-center justify-between">
+
+        <button class="flex flex-col items-center text-gray-600 hover:text-black">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 6v4h4" />
+          </svg>
+          <span class="text-xs font-bold">Map</span>
+        </button>
+
+        <button class="flex flex-col items-center text-green-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M5.121 17.804A8 8 0 1116.97 5.93M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span class="text-xs font-bold">Profile</span>
+        </button>
+
+        <button class="flex flex-col items-center text-gray-600 hover:text-red-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+          </svg>
+          <span class="text-xs font-bold">Logout</span>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
