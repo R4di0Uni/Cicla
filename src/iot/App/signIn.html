@@ -45,7 +45,8 @@
         </div>
 
         <!-- FORM -->
-        <form class="space-y-6" onsubmit="event.preventDefault(); window.location.href='home.html'">
+        <form id="loginForm" class="space-y-6">
+
 
           <!-- Username -->
           <div class="space-y-1">
@@ -131,6 +132,42 @@
       eyeOpen.classList.toggle("hidden", !isHidden);
       eyeClosed.classList.toggle("hidden", isHidden);
     });
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const identifier = e.target[0].value.trim(); // email or username
+  const password = e.target[1].value.trim();
+
+  // Detect if it's an email or username
+  const isEmail = identifier.includes("@");
+  const body = isEmail
+    ? { email: identifier, password }
+    : { username: identifier, password };
+
+  const res = await fetch("http://localhost:3000/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Login failed");
+    return;
+  }
+
+  // Safety: ensure user always exists
+  if (!data.user) {
+    alert("Server response is missing user info.");
+    return;
+  }
+
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+
+  window.location.href = "home.html";
+});
   </script>
 
 </body>

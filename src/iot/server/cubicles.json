@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Cicla Box - Parque Eduardo VII",
+    "address": "Parque Eduardo VII, Lisboa",
+    "freeSlots": 3,
+    "totalSlots": 12,
+    "pricePerHour": 0.80,
+    "lat": 38.7277,
+    "lng": -9.1525
+  },
+  {
+    "name": "Cicla Box - Cais do Sodré",
+    "address": "Rua da Cintura do Porto de Lisboa",
+    "freeSlots": 1,
+    "totalSlots": 10,
+    "pricePerHour": 1.20,
+    "lat": 38.7066,
+    "lng": -9.1447
+  },
+  {
+    "name": "Cicla Box - Alameda",
+    "address": "Alameda Dom Afonso Henriques",
+    "freeSlots": 5,
+    "totalSlots": 14,
+    "pricePerHour": 0.90,
+    "lat": 38.7364,
+    "lng": -9.1333
+  },
+  {
+    "name": "Cicla Box - Campo Pequeno",
+    "address": "Avenida República, Campo Pequeno",
+    "freeSlots": 0,
+    "totalSlots": 8,
+    "pricePerHour": 1.00,
+    "lat": 38.7392,
+    "lng": -9.1484
+  },
+  {
+    "name": "Cicla Box - Belém",
+    "address": "Praça do Império, Belém",
+    "freeSlots": 6,
+    "totalSlots": 16,
+    "pricePerHour": 1.30,
+    "lat": 38.6972,
+    "lng": -9.2065
+  }
+]

@@ -53,9 +53,11 @@
         <span class="text-green-700 font-semibold">📍 Lisboa</span>
       </div>
 
-      <button class="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center">
-        <span class="text-gray-800 text-lg">👤</span>
-      </button>
+      <button onclick="window.location.href='profile.html'"
+        class="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center">
+  <span class="text-gray-800 text-lg">👤</span>
+</button>
+
     </div>
   </div>
 
@@ -80,50 +82,53 @@
 </div>
 
 <script>
-  const cubes = [
-    { id:"1", name:"Cicla Box – Avenida da Liberdade", address:"Av. da Liberdade 120", distance:"350m", totalSlots:12, freeSlots:5, pricePerHour:0.50 },
-    { id:"2", name:"Cicla Box – Rossio", address:"Praça Dom Pedro IV", distance:"800m", totalSlots:12, freeSlots:2, pricePerHour:0.50 },
-    { id:"3", name:"Cicla Box – Cais do Sodré", address:"Praça Duque da Terceira", distance:"1.2km", totalSlots:12, freeSlots:8, pricePerHour:0.50 },
-    { id:"4", name:"Cicla Box – Marquês de Pombal", address:"Praça Marquês de Pombal", distance:"1.5km", totalSlots:12, freeSlots:0, pricePerHour:0.50 },
-  ];
+let cubes = [];
+let filterMode = "nearest";
 
-  let filterMode = "nearest";
-  let selectedCube = null;
+async function loadCubicles() {
+  const res = await fetch("http://localhost:3000/cubicles");
+  cubes = await res.json();
+  renderList();
+  renderPins();
+}
 
-  function sortCubes() {
-    if (filterMode === "available")
-      return [...cubes].sort((a,b) => b.freeSlots - a.freeSlots);
+function sortCubes() {
+  if (filterMode === "available")
+    return [...cubes].sort((a, b) => b.freeSlots - a.freeSlots);
 
-    return [...cubes].sort((a,b) => parseFloat(a.distance) - parseFloat(b.distance));
-  }
+  return cubes; // later you can sort by real distance
+}
 
-  function renderList() {
-    let html = `
-      <h3 class="text-lg font-bold mb-4">Nearby Cicla Boxes</h3>
-      <div class="space-y-3 max-h-48 overflow-y-auto">
-    `;
+function renderList() {
+  let html = `
+    <h3 class="text-lg font-bold mb-4">Nearby Cicla Boxes</h3>
+    <div class="space-y-3 max-h-48 overflow-y-auto">
+  `;
 
-    sortCubes().forEach(c => {
-      html += `
-        <button onclick='showCube(${c.id})'
-          class="w-full flex items-center justify-between p-3 bg-gray-100 rounded-xl hover:bg-gray-200">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full flex items-center justify-center ${c.freeSlots? "bg-green-500":"bg-gray-400"}">
-              🚲
-            </div>
-            <div>
-              <p class="font-bold">${c.name}</p>
-              <p class="text-sm text-gray-500">${c.freeSlots} slots free</p>
-            </div>
+  sortCubes().forEach(c => {
+    html += `
+      <button onclick="window.location.href='cubeDetails.html?id=${c._id}'"
+        class="w-full flex items-center justify-between p-3 bg-gray-100 rounded-xl hover:bg-gray-200">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center 
+            ${c.freeSlots ? "bg-green-500" : "bg-gray-400"}">
+            🚲
           </div>
-          <span class="font-bold text-green-600">${c.distance}</span>
-        </button>
-      `;
-    });
+          <div>
+            <p class="font-bold">${c.name}</p>
+            <p class="text-sm text-gray-500">${c.freeSlots} slots free</p>
+          </div>
+        </div>
+        
+        <span class="font-bold text-green-600">${c.address}</span>
+      </button>
+    `;
+  });
 
-    html += `</div>`;
-    sheetContent.innerHTML = html;
-  }
+  sheetContent.innerHTML = html + "</div>";
+}
+
 
   function showCubeByObj(cube) {
     selectedCube = cube;
@@ -164,27 +169,34 @@
   }
 
   // Render pins
+  function renderPins() {
   const pins = document.getElementById("pins");
-  cubes.forEach((cube,i)=>{
+  pins.innerHTML = "";
+
+  cubes.forEach((c, i) => {
     const el = document.createElement("button");
     el.className = "absolute transform -translate-x-1/2 -translate-y-1/2 z-10 hover:scale-110 transition";
-    el.style.top = (25 + i*15) + "%";
-    el.style.left = (20 + i*18) + "%";
-    el.onclick = () => showCubeByObj(cube);
+    el.style.top = (25 + i * 15) + "%";
+    el.style.left = (20 + i * 18) + "%";
+
+    el.onclick = () => window.location.href = `cubeDetails.html?id=${c._id}`;
 
     el.innerHTML = `
-      <div class="relative ${cube.freeSlots? "":"opacity-50"}">
+      <div class="relative ${c.freeSlots ? "" : "opacity-50"}">
         <div class="w-12 h-12 rounded-full flex items-center justify-center shadow
-          ${cube.freeSlots? "bg-green-500":"bg-gray-400"}">
+          ${c.freeSlots ? "bg-green-500" : "bg-gray-400"}">
           🚲
         </div>
         <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white text-xs font-bold flex items-center justify-center">
-          ${cube.freeSlots}
+          ${c.freeSlots}
         </span>
       </div>
     `;
+
     pins.appendChild(el);
   });
+}
+
 
   // Filters
   document.getElementById("filterNearest").onclick = () => {
@@ -202,6 +214,7 @@
   };
 
   renderList();
+  loadCubicles();
 </script>
 
 </body>

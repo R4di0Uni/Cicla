@@ -39,7 +39,7 @@
     </div>
 
     <!-- Form -->
-    <form class="px-6 pb-8 space-y-4">
+    <form id="signupForm" class="px-6 pb-8 space-y-4">
 
       <!-- Name -->
       <div>
@@ -136,5 +136,32 @@
     </form>
 
   </div>
+  <script>
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = e.target[0].value;
+  const email = e.target[1].value;
+  const phone = e.target[2].value;
+  const password = e.target[3].value;
+  const bikeModel = e.target[5].value;
+
+  const res = await fetch("http://localhost:3000/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, phone, password, bikeModel })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert("Account created!");
+    window.location.href = "signin.html";
+  } else {
+    alert(data.error);
+  }
+});
+</script>
+
 </body>
 </html>

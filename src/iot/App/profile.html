@@ -26,7 +26,7 @@
     <!-- Header -->
     <div class="relative gradient-main pb-10 pt-12 px-6">
       <div class="flex items-center justify-between mb-6">
-        <button class="w-10 h-10 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center">
+        <button  onclick="history.back()" class="w-10 h-10 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center">
           <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
@@ -42,8 +42,9 @@
           </svg>
         </div>
         <div>
-          <h1 class="text-xl font-bold text-gray-800">João Silva</h1>
-          <p class="text-sm text-gray-700">joao.silva@email.com</p>
+          <h1 id="profileName" class="text-xl font-bold text-gray-800"></h1>
+          <p id="profileEmail" class="text-sm text-gray-700"></p>
+
         </div>
       </div>
     </div>
@@ -188,5 +189,31 @@
     </div>
 
   </div>
+  <script>
+  let rawUser = localStorage.getItem("user");
+  let user = null;
+
+  // Safe check: avoid parsing "undefined" or invalid JSON
+  try {
+    user = rawUser && rawUser !== "undefined" ? JSON.parse(rawUser) : null;
+  } catch (e) {
+    user = null;
+  }
+
+  // If no valid user, redirect to login
+  if (!user) {
+    localStorage.removeItem("user"); // clean corrupted value
+    alert("You must sign in first.");
+    window.location.href = "signIn.html";
+  }
+
+  // Fill profile data
+  document.getElementById("profileName").innerText =
+    user.name || user.username || "Unknown user";
+
+  document.getElementById("profileEmail").innerText =
+    user.email || "No email found";
+</script>
+
 </body>
 </html>
