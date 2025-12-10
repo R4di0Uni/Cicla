@@ -6,6 +6,8 @@ const mqtt = require("mqtt");
 const Sensor = require("./models/Sensor");
 const authRoutes = require("./routes/authRoutes");
 const cubicleRoutes = require("./routes/cubicleRoutes");
+const reservationRoutes = require("./routes/reservationRoutes");
+
 
 const app = express();
 app.use(cors());
@@ -45,6 +47,7 @@ mqttClient.on("message", async (topic, message) => {
 // --------------------
 app.use("/auth", authRoutes);       // /auth/signup  /auth/login
 app.use("/cubicles", cubicleRoutes);
+app.use("/reservations", reservationRoutes);
 
 // Sensors basic route
 app.get("/sensors", (req, res) => {

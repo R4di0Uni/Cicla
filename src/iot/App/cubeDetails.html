@@ -147,10 +147,8 @@
 
         pricePerHour = cubicleData.pricePerHour;
         // Initialize slots data dynamically
-        slotsData = Array.from({ length: cubicleData.totalSlots }, (_, i) => ({
-          id: i + 1,
-          occupied: i >= cubicleData.freeSlots, // simple example
-        }));
+        slotsData = cubicleData.slots;
+
 
         updateUI();
       } catch(err) {
@@ -241,26 +239,52 @@
       document.getElementById("totalPrice").innerText = "€" + (selectedDuration * pricePerHour).toFixed(2);
     }
 
-    function updateReserveButton() {
-      const btn = document.getElementById("reserveBtn");
-      if (selectedSlot && selectedTime) {
-        btn.disabled = false;
-        btn.className = "px-4 py-3 rounded-xl font-bold bg-green-600 text-white";
-        btn.onclick = () => {
-          alert(`Booking Complete!
-Cubicle: ${cubicleData.name}
-Slot: ${selectedSlot}
-Day: ${selectedDay}
-Time: ${selectedTime}
-Duration: ${selectedDuration}h
-Total: €${(selectedDuration * pricePerHour).toFixed(2)}
-`);
-        };
-      } else {
-        btn.disabled = true;
-        btn.className = "px-4 py-3 rounded-xl font-bold bg-gray-400 text-white cursor-not-allowed";
-      }
-    }
+   const reserveBtn = document.getElementById("reserveBtn");
+
+reserveBtn.onclick = async () => {
+  let user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return alert("Login required!");
+
+  const body = {
+    userId: user._id,
+    cubicleId: cubeId,
+    slot: selectedSlot,
+    day: selectedDay,
+    startTime: selectedTime,
+    duration: selectedDuration,
+    price: selectedDuration * pricePerHour
+  };
+
+  const res = await fetch("http://localhost:3000/reservations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  if (res.ok) {
+    alert("Reservation created!");
+    window.location.href = "profile.html";
+  } else {
+    alert("Failed to reserve.");
+  }
+};
+
+function updateReserveButton() {
+  const btn = document.getElementById("reserveBtn");
+
+  const canReserve = selectedSlot && selectedTime;
+
+  if (canReserve) {
+    btn.disabled = false;
+    btn.className = "px-4 py-3 rounded-xl font-bold bg-green-500 text-white";
+  } else {
+    btn.disabled = true;
+    btn.className = "px-4 py-3 rounded-xl font-bold bg-gray-400 text-white cursor-not-allowed";
+  }
+}
+
+
+
 
     function updateUI() {
       renderSlots();

@@ -8,7 +8,15 @@ const cubicleSchema = new mongoose.Schema({
   totalSlots: Number,
   freeSlots: Number,
   pricePerHour: Number,
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" } // who rented it
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+
+  // NEW FIELD
+  slots: [
+    {
+      id: Number,
+      occupied: { type: Boolean, default: false }
+    }
+  ]
 });
 
 module.exports = mongoose.model("Cubicle", cubicleSchema);
