@@ -53,4 +53,35 @@ router.get("/user/:id", async (req, res) => {
   }
 });
 
+router.get("/slots", async (req, res) => {
+  try {
+    // Since you only have one cubicle, just get the first one
+    const cubicle = await Cubicle.findOne();
+    if (!cubicle) return res.status(404).json({ error: "Cubicle not found" });
+
+    const reservations = await Reservation.find({ status: "active" })
+      .populate("userId", "name");
+
+    const slots = cubicle.slots.map(s => {
+      const resv = reservations.find(r => r.slot === s.id);
+      return {
+        id: s.id,
+        occupied: s.occupied,
+        user: resv ? resv.userId.name : null
+      };
+    });
+
+    res.json({
+      totalSlots: cubicle.totalSlots,
+      slots
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 module.exports = router;
