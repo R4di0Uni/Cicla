@@ -3,16 +3,24 @@
 #include <Wire.h>
 #include "HX711.h"
 #include <MPU6050.h>
+#include <ESP32Servo.h>
+
 
 const char* ssid = "Redmi 14C";
 const char* password = "korekara";
-const char* mqtt_server = "172.25.1.177";
+const char* mqtt_server = "10.103.72.177";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+#define SERVO_PIN 27
+
 #define BUZZER_PIN 16
 #define REED_PIN   17
+
+#define LOCK_ANGLE   0     
+#define UNLOCK_ANGLE 90    
+
 
 #define HX_SCK 19
 #define HX_DT  23
@@ -22,16 +30,39 @@ PubSubClient client(espClient);
 
 HX711 scale;
 MPU6050 mpu;
+Servo lockServo;
+
+bool isUnlocked = false; 
+
+
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Received cmd: ");
-  for (int i = 0; i < length; i++) Serial.print((char)payload[i]);
-  Serial.println();
+  String cmd = "";
 
-  if (String((char*)payload).startsWith("beep")) {
+  for (int i = 0; i < length; i++) {
+    cmd += (char)payload[i];
+  }
+
+  Serial.print("Received cmd: ");
+  Serial.println(cmd);
+
+  if (cmd == "beep") {
     tone(BUZZER_PIN, 1000, 300);
   }
+
+  if (cmd == "slot1_unlock") {
+    lockServo.write(UNLOCK_ANGLE);
+    isUnlocked = true;
+    Serial.println("Slot 1 UNLOCKED");
+  }
+
+  if (cmd == "slot1_lock") {
+    lockServo.write(LOCK_ANGLE);
+    isUnlocked = false;
+    Serial.println("Slot 1 LOCKED");
+  }
 }
+
 
 void reconnect() {
   while (!client.connected()) {
@@ -82,6 +113,10 @@ Serial.println("HX711 calibrated");
   } else {
     Serial.println("MPU6050 connected");
   }
+
+  lockServo.attach(SERVO_PIN);
+  lockServo.write(LOCK_ANGLE);
+
 }
 
 void loop() {
@@ -97,9 +132,10 @@ void loop() {
 
   char payload[200];
   sprintf(payload,
-    "{\"reed\":%d, \"weight\":%.2f, \"ax\":%d, \"ay\":%d, \"az\":%d, \"gx\":%d, \"gy\":%d, \"gz\":%d}",
-    reedState, weight, ax, ay, az, gx, gy, gz
-  );
+  "{\"reed\":%d, \"weight\":%.2f, \"lock\":%d, \"ax\":%d, \"ay\":%d, \"az\":%d, \"gx\":%d, \"gy\":%d, \"gz\":%d}",
+  reedState, weight, isUnlocked, ax, ay, az, gx, gy, gz
+);
+
 
   client.publish("esp32/sensors", payload);
 

@@ -1,87 +1,142 @@
 const express = require("express");
 const Reservation = require("../models/Reservation");
 const Cubicle = require("../models/Cubicle");
+const mqttClient = require("../mqttClient"); // ✅ cliente MQTT central
+
 const router = express.Router();
 
+// --------------------
 // CREATE reservation
+// --------------------
 router.post("/", async (req, res) => {
   try {
-    const { cubicleId, slot } = req.body;
+    const { cubicleId, slot, startDateTime, endDateTime } = req.body;
 
-    // 1️⃣ Create reservation
-    const saved = await Reservation.create(req.body);
+    const conflict = await Reservation.findOne({
+      cubicleId,
+      slot,
+      status: "active",
+      startDateTime: { $lt: endDateTime },
+      endDateTime: { $gt: startDateTime }
+    });
 
-    // 2️⃣ Update cubicle (mark slot occupied)
-    const cubicle = await Cubicle.findById(cubicleId);
-    if (!cubicle) return res.status(404).json({ error: "Cubicle not found" });
-
-    // Initialize slot array if not present
-    if (!cubicle.slots || cubicle.slots.length === 0) {
-      cubicle.slots = Array.from({ length: cubicle.totalSlots }, (_, i) => ({
-        id: i + 1,
-        occupied: false
-      }));
+    if (conflict) {
+      return res.status(400).json({ error: "Slot not available for this time" });
     }
 
-    // Mark selected slot as occupied
-    const idx = cubicle.slots.findIndex(s => s.id === slot);
-    if (idx !== -1) {
-      cubicle.slots[idx].occupied = true;
-    } else {
-      return res.status(400).json({ error: "Invalid slot number" });
-    }
+    const reservation = await Reservation.create(req.body);
+    res.json(reservation);
 
-    // Recalculate free slots
-    cubicle.freeSlots = cubicle.slots.filter(s => !s.occupied).length;
-
-    await cubicle.save();
-
-    res.json(saved);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
+// --------------------
 // GET reservations of user
+// --------------------
 router.get("/user/:id", async (req, res) => {
   try {
-    const reservations = await Reservation.find({ userId: req.params.id });
+    const reservations = await Reservation.find({ userId: req.params.id })
+      .populate("cubicleId", "name");
     res.json(reservations);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-router.get("/slots", async (req, res) => {
+// --------------------
+// UNLOCK
+// --------------------
+router.post("/:id/unlock", async (req, res) => {
   try {
-    // Since you only have one cubicle, just get the first one
-    const cubicle = await Cubicle.findOne();
-    if (!cubicle) return res.status(404).json({ error: "Cubicle not found" });
+    const booking = await Reservation.findById(req.params.id);
 
-    const reservations = await Reservation.find({ status: "active" })
-      .populate("userId", "name");
+    if (!booking) {
+      return res.status(404).json({ error: "Reservation not found" });
+    }
 
-    const slots = cubicle.slots.map(s => {
-      const resv = reservations.find(r => r.slot === s.id);
-      return {
-        id: s.id,
-        occupied: s.occupied,
-        user: resv ? resv.userId.name : null
-      };
-    });
+    booking.isUnlocked = true;
+    await booking.save();
 
-    res.json({
-      totalSlots: cubicle.totalSlots,
-      slots
-    });
+    // 🔓 envia comando para o ESP32
+    if (Number(booking.slot) === 1) {
+  mqttClient.publish("esp32/cmd", "slot1_unlock");
+}
+
+
+    res.json({ success: true, isUnlocked: true });
 
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
+// --------------------
+// LOCK
+// --------------------
+router.post("/:id/lock", async (req, res) => {
+  try {
+    const reservation = await Reservation.findById(req.params.id);
 
+    if (!reservation) {
+      return res.status(404).json({ error: "Reservation not found" });
+    }
+
+    reservation.isUnlocked = false;
+    await reservation.save();
+
+    // 🔒 envia comando para o ESP32
+    if (Number(reservation.slot) === 1) {
+  mqttClient.publish("esp32/cmd", "slot1_lock");
+}
+
+
+    res.json({
+      success: true,
+      isUnlocked: false
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --------------------
+// GET reservations of cubicle (day)
+// --------------------
+router.get("/cubicle/:cubicleId", async (req, res) => {
+  const { cubicleId } = req.params;
+  const { day } = req.query;
+
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const dayIndex = days.indexOf(day);
+  if (dayIndex === -1) {
+    return res.status(400).json({ error: "Invalid day" });
+  }
+
+  const now = new Date();
+  const monday = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+
+  const startOfDay = new Date(monday);
+  startOfDay.setDate(startOfDay.getDate() + dayIndex);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(startOfDay);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  try {
+    const reservations = await Reservation.find({
+      cubicleId,
+      status: "active",
+      startDateTime: { $lt: endOfDay },
+      endDateTime: { $gt: startOfDay }
+    });
+
+    res.json(reservations);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;

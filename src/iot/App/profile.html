@@ -190,6 +190,13 @@
 
   </div>
   <script>
+    // DEV ONLY — simulate current time
+const DEV_NOW = new Date("2025-12-15T09:00:00");
+
+function now() {
+  return DEV_NOW; // replace with new Date() in production
+}
+
 let user = JSON.parse(localStorage.getItem("user"));
 if (!user) window.location.href = "signIn.html";
 
@@ -200,35 +207,137 @@ async function loadBookings() {
   const res = await fetch(`http://localhost:3000/reservations/user/${user._id}`);
   const bookings = await res.json();
 
+
+
   const container = document.querySelector(".space-y-3");
   container.innerHTML = "";
 
   bookings.forEach(b => {
     const div = document.createElement("div");
+    const start = new Date(b.startDateTime);
+    const end = new Date(b.endDateTime);
+
+    const dateStr = start.toLocaleDateString();
+    const timeStr = `${start.getHours()}:00 – ${end.getHours()}:00`;
     div.className = "bg-gray-100 rounded-2xl p-4";
 
     div.innerHTML = `
-      <div class="flex items-start justify-between mb-3">
-        <div>
-          <p class="font-bold text-gray-800">${b.cubicleId?.name || "Parking Spot"}</p>
-          <p class="text-xs text-gray-500">Slot #${b.slot}</p>
-        </div>
-        <span class="text-xs font-bold text-green-700 bg-green-200 px-2 py-1 rounded-full">${b.status}</span>
-      </div>
+  <!-- Booking header (clickable) -->
+  <div onclick="toggleDropdown('${b._id}')" class="flex items-start justify-between mb-3 cursor-pointer">
+    <div>
+      <p class="font-bold text-gray-800">${b.cubicleId?.name || "Parking Spot"}</p>
+      <p class="text-xs text-gray-500">Slot #${b.slot}</p>
+    </div>
+    <span class="text-xs font-bold ${
+  isActive(b)
+    ? "text-green-700 bg-green-200"
+    : "text-gray-600 bg-gray-300"
+} px-2 py-1 rounded-full">
+  ${isActive(b) ? "Active" : "Past"}
+</span>
 
-      <div class="text-xs text-gray-600">
-        Day: ${b.day} • ${b.startTime} • ${b.duration}h
-        <div class="font-bold mt-1 text-gray-800">€${b.price.toFixed(2)}</div>
-      </div>
-    `;
+  </div>
+
+  <!-- Booking info -->
+  <div class="text-xs text-gray-600">
+  ${dateStr} • ${timeStr}
+  <div class="font-bold mt-1 text-gray-800">€${b.price.toFixed(2)}</div>
+</div>
+
+
+  <!-- Dropdown -->
+<div id="dropdown-${b._id}" class="hidden mt-3 border-t pt-3 space-y-2">
+  ${isWithinReservation(b) ? `
+ ${
+  b.isUnlocked
+    ? `<button onclick="lockCubicle('${b._id}', ${b.slot})"
+        class="w-full bg-red-100 text-red-700 py-2 rounded-lg font-bold">
+        🔒 Lock Cubicle
+      </button>`
+    : `<button onclick="unlockCubicle('${b._id}', ${b.slot})"
+        class="w-full bg-green-100 text-green-700 py-2 rounded-lg font-bold">
+        🔓 Unlock Cubicle
+      </button>`
+}
+
+` : `
+  <div class="text-xs text-center text-gray-500 font-bold">
+    Outside reservation time
+  </div>
+`}
+
+
+
+  <div class="text-center text-xs font-bold ${
+    b.isUnlocked ? "text-green-600" : "text-gray-600"
+  }">
+    Status: ${b.isUnlocked ? "Unlocked" : "Locked"}
+  </div>
+</div>
+
+`;
+
     container.appendChild(div);
   });
 }
+
+function toggleDropdown(id) {
+  document.querySelectorAll("[id^='dropdown-']").forEach(d => {
+    if (d.id !== `dropdown-${id}`) d.classList.add("hidden");
+  });
+
+  const dropdown = document.getElementById(`dropdown-${id}`);
+  dropdown.classList.toggle("hidden");
+}
+
+function isActive(b) {
+  return isWithinReservation(b);
+}
+
+
+function isWithinReservation(b) {
+  const current = now();
+  return current >= new Date(b.startDateTime) &&
+         current <= new Date(b.endDateTime);
+}
+
+
+
 
 function logout() {
   localStorage.removeItem("user"); 
   window.location.href = "signIn.html"; 
 }
+
+async function unlockCubicle(bookingId, slot) {
+  if (Number(slot) !== 1) {
+    alert("Only Slot 1 has a physical lock");
+    return;
+  }
+
+  await fetch(`http://localhost:3000/reservations/${bookingId}/unlock`, {
+    method: "POST"
+  });
+
+  loadBookings();
+}
+
+async function lockCubicle(bookingId, slot) {
+  if (Number(slot) !== 1) {
+    alert("Only Slot 1 has a physical lock");
+    return;
+  }
+
+  await fetch(`http://localhost:3000/reservations/${bookingId}/lock`, {
+    method: "POST"
+  });
+
+  loadBookings();
+}
+
+
+
+
 
 
 loadBookings();

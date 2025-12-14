@@ -117,7 +117,10 @@ function renderList() {
           </div>
           <div>
             <p class="font-bold">${c.name}</p>
-            <p class="text-sm text-gray-500">${c.freeSlots} slots free</p>
+            <p class="text-sm text-gray-500">
+  ${c.freeSlots} slots free now
+</p>
+
           </div>
         </div>
         
@@ -164,9 +167,11 @@ function renderList() {
   }
 
   function showCube(id) {
-    const cube = cubes.find(c => c.id == id);
-    showCubeByObj(cube);
-  }
+  const cube = cubes.find(c => c._id === id);
+  if (!cube) return;
+  showCubeByObj(cube);
+}
+
 
   // Render pins
   function renderPins() {
