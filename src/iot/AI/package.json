@@ -7,8 +7,11 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
-    "@tensorflow/tfjs": "^4.22.0"
-  }
+    "@tensorflow/tfjs": "^4.22.0",
+    "ml-random-forest": "^2.1.0",
+    "mqtt": "^5.14.1"
+  },
+  "keywords": [],
+  "description": ""
 }

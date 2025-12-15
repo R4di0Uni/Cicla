@@ -13,9 +13,13 @@ const char* mqtt_server = "10.103.72.177";
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+#define SERVO_CHANNEL 4
+#define BUZZER_CHANNEL 7
+
+
 #define SERVO_PIN 27
 
-#define BUZZER_PIN 16
+#define BUZZER_PIN 26
 #define REED_PIN   17
 
 #define LOCK_ANGLE   0     
@@ -47,8 +51,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(cmd);
 
   if (cmd == "beep") {
-    tone(BUZZER_PIN, 1000, 300);
-  }
+  ledcWriteTone(BUZZER_PIN, 1500); // beep
+  delay(300);
+  ledcWriteTone(BUZZER_PIN, 0);    // silence
+}
+
+
 
   if (cmd == "slot1_unlock") {
     lockServo.write(UNLOCK_ANGLE);
@@ -84,8 +92,11 @@ void setup() {
   int balancing_factor = -462.67;
   Serial.begin(115200);
 
-  pinMode(BUZZER_PIN, OUTPUT);
-  pinMode(REED_PIN, INPUT_PULLUP);
+  // Passive buzzer (LEDC)
+ledcAttach(BUZZER_PIN, 2000, 8);   // pin, base freq, resolution
+ledcWriteTone(BUZZER_PIN, 0);      // silent by default
+
+
 
   
   WiFi.begin(ssid, password);
