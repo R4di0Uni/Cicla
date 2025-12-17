@@ -1,211 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cicla – Parking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cicla – Estacionamento</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { background: #f9fafb; }
-  </style>
 </head>
 
-<body class="min-h-screen bg-gray-100 flex justify-center p-4">
+<body class="min-h-screen bg-[#E6FFFB] flex justify-center">
 
-  <!-- FRAME -->
-  <div class="bg-white w-full max-w-sm rounded-2xl shadow-lg overflow-hidden">
+<!-- APP FRAME -->
+<div class="relative w-full max-w-[430px] min-h-screen bg-[#E6FFFB] overflow-hidden">
 
-    <!-- HEADER -->
-    <div class="bg-gradient-to-br from-green-100 to-green-300 pb-6 relative">
-      <div class="px-6 pt-10">
-        <div class="flex items-center justify-between mb-4">
-          <button onclick="history.back()" class="w-10 h-10 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center hover:bg-white/60 transition">
-            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7l7-7" />
-            </svg>
-          </button>
-          <h1 class="text-lg font-bold text-gray-800">Cicla</h1>
-        </div>
+  <!-- HEADER -->
+  <div class="bg-gradient-to-br from-[#6CF7EB] to-[#69DCFF] px-6 pt-10 pb-8 relative">
+    <button onclick="history.back()"
+      class="absolute left-4 top-8 w-10 h-10 rounded-full bg-white/40 flex items-center justify-center">
+      ←
+    </button>
 
-        <h1 class="text-2xl font-extrabold text-gray-900 mb-1 tracking-wide" id="cubicleName">PARKING</h1>
-        <div class="flex items-center gap-2 text-gray-700" id="cubicleAddress">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21s8-7.333 8-13A8 8 0 1 0 4 8c0 5.667 8 13 8 13z" />
-          </svg>
-          <span class="text-sm">Loading...</span>
-        </div>
-      </div>
-    </div>
+    <img src="./assets/cicla-bikeep-logo.png"
+         class="absolute right-4 top-8 w-20"/>
 
-    <!-- CONTENT -->
-    <div class="px-6 py-6 space-y-6">
+    <h1 id="cubicleName" class="mt-10 text-2xl font-bold text-[#2F3A3A]">
+      Loading...
+    </h1>
 
-      <!-- CUBICLE STATS -->
-      <div class="flex gap-4" id="cubicleStats">
-        <!-- dynamically filled -->
-      </div>
-
-      <!-- SLOT SELECTION -->
-      <div>
-        <h2 class="text-sm font-bold text-gray-800 mb-3">Choose a parking spot</h2>
-        <div id="slotGrid" class="grid grid-cols-4 gap-2"></div>
-
-        <div class="flex items-center gap-4 mt-3">
-          <div class="flex items-center gap-2">
-            <div class="w-4 h-4 rounded bg-green-200 border border-green-300"></div>
-            <span class="text-xs text-gray-500">Available</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- DAY SELECTION -->
-      <div>
-        <h2 class="text-sm font-bold text-gray-800 mb-3">Day of the week</h2>
-        <div id="dayButtons" class="flex flex-wrap gap-2"></div>
-      </div>
-
-      <!-- TIME SELECTION -->
-      <div>
-        <h2 class="text-sm font-bold text-gray-800 mb-3">Pick available timeslot</h2>
-        <div id="timeButtons" class="grid grid-cols-4 gap-2"></div>
-      </div>
-
-      <!-- DURATION -->
-      <div>
-        <h2 class="text-sm font-bold text-gray-800 mb-3">Duration (hours)</h2>
-        <div id="durationButtons" class="flex gap-2"></div>
-      </div>
-
-      <!-- PRICE SUMMARY -->
-      <div class="bg-green-100 rounded-2xl p-4 flex items-center justify-between">
-        <div>
-          <span class="text-sm text-gray-600">Total price</span>
-          <p id="totalPrice" class="text-2xl font-extrabold text-gray-900">€0.00</p>
-        </div>
-
-        <button id="reserveBtn" class="px-4 py-3 rounded-xl font-bold bg-gray-400 text-white cursor-not-allowed" disabled>
-          BOOK PLACE
-        </button>
-      </div>
-    </div>
+    <p id="cubicleAddress"
+       class="flex items-center gap-2 mt-2 text-[#2F3A3A]/80">
+      📍 <span>Loading...</span>
+    </p>
   </div>
 
-  <script>
-    // -------------------------
-    // GET CUBE ID FROM URL
-    // -------------------------
-    const params = new URLSearchParams(window.location.search);
-    const cubeId = params.get("id");
+  <!-- CONTENT -->
+  <div class="px-6 py-6 space-y-8">
 
-    // -------------------------
-    // STATE
-    // -------------------------
-    let cubicleData = null;
-    const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-    const times = ['08h','09h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h'];
-    let slotsData = [];
-    let selectedSlot = null;
-    let selectedDay = 'Mon';
-    let selectedTime = null;
-    let selectedDuration = 1;
-    let pricePerHour = 0.5;
+    <!-- STATS -->
+    <div id="cubicleStats" class="flex gap-4"></div>
 
-    let reservationsForDay = [];
+    <!-- SLOTS -->
+    <div>
+      <h2 class="font-semibold text-[#2F3A3A] mb-4">
+        Escolha um lugar
+      </h2>
+      <div id="slotGrid" class="grid grid-cols-4 gap-4"></div>
+    </div>
 
+    <!-- DAYS -->
+    <div>
+      <h2 class="font-semibold text-[#2F3A3A] mb-3">
+        Dia da semana
+      </h2>
+      <div id="dayButtons" class="flex flex-wrap gap-2"></div>
+    </div>
 
-    // -------------------------
-    // LOAD CUBICLE DATA
-    // -------------------------
-    async function loadCubicle() {
-      try {
-        const res = await fetch(`http://localhost:3000/cubicles/${cubeId}`);
-        cubicleData = await res.json();
+    <!-- HOURS -->
+    <div>
+      <h2 class="font-semibold text-[#2F3A3A] mb-3">
+        Selecione o horário
+      </h2>
+      <div id="timeButtons" class="grid grid-cols-4 gap-2"></div>
+    </div>
 
-        if (!cubicleData) return;
+    <!-- DURATION -->
+    <div>
+      <h2 class="font-semibold text-[#2F3A3A] mb-3">
+        Duração (horas)
+      </h2>
+      <div id="durationButtons" class="flex gap-2"></div>
+    </div>
 
-        // Fill basic info
-        document.getElementById("cubicleName").textContent = cubicleData.name;
-        document.getElementById("cubicleAddress").querySelector("span").textContent = cubicleData.address;
+    <!-- PRICE -->
+    <div class="bg-gradient-to-r from-[#6CF7EB] to-[#69DCFF] rounded-3xl p-5 flex items-center justify-between">
+      <div>
+        <p class="text-sm text-[#2F3A3A]/70">Preço total</p>
+        <p id="totalPrice" class="text-3xl font-bold text-[#2F3A3A]">€0.00</p>
+      </div>
 
-        // Fill stats
-        const statsDiv = document.getElementById("cubicleStats");
-        statsDiv.innerHTML = `
-          <div class="flex-1 bg-gray-100 rounded-xl p-3 text-center">
-            <div class="text-2xl font-bold">${cubicleData.totalSlots}</div>
-            <div class="text-sm text-gray-500">Total slots</div>
-          </div>
-          <div class="flex-1 bg-lime-200 rounded-xl p-3 text-center">
-            <div class="text-2xl font-bold">€${cubicleData.pricePerHour.toFixed(2)}</div>
-            <div class="text-sm text-gray-600">per hour</div>
-          </div>
-        `;
+      <button id="reserveBtn"
+        class="px-6 py-4 rounded-full bg-[#69DCFF] text-[#2F3A3A] font-bold opacity-50 cursor-not-allowed"
+        disabled>
+        Reservar
+      </button>
+    </div>
 
-        pricePerHour = cubicleData.pricePerHour;
-        // Initialize slots data dynamically
-        slotsData = cubicleData.slots;
+  </div>
+</div>
 
+<!-- ================== SCRIPT ================== -->
+<script>
+const params = new URLSearchParams(window.location.search);
+const cubeId = params.get("id");
 
-        updateUI();
-      } catch(err) {
-        console.error("Failed to load cubicle:", err);
-      }
-    }
+let cubicleData = null;
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const times = ['08h','09h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h'];
 
-    // -------------------------
-    // RENDER HELPERS
-    // -------------------------
-    function renderSlots() {
-      const grid = document.getElementById("slotGrid");
-      grid.innerHTML = "";
-      slotsData.forEach(slot => {
-        const btn = document.createElement("button");
-        btn.className = "aspect-square rounded-xl flex flex-col items-center justify-center transition";
+let slotsData = [];
+let selectedSlot = null;
+let selectedDay = 'Mon';
+let selectedTime = null;
+let selectedDuration = 1;
+let pricePerHour = 0.5;
+let reservationsForDay = [];
 
-       if (selectedSlot === slot.id) {
-  btn.className += " bg-green-500 text-white border-2 border-green-700 scale-105";
-} else {
-  btn.className += " bg-green-200 border border-green-300 hover:bg-green-300";
+// -------------------------
+// LOAD CUBICLE DATA
+// -------------------------
+async function loadCubicle() {
+  try {
+    const res = await fetch(`http://localhost:3000/cubicles/${cubeId}`);
+    cubicleData = await res.json();
+    if (!cubicleData) return;
+
+    // Fill basic info
+    document.getElementById("cubicleName").textContent = cubicleData.name;
+    document.querySelector("#cubicleAddress span").textContent = cubicleData.address;
+
+    // Fill stats
+    document.getElementById("cubicleStats").innerHTML = `
+      <div class="flex-1 bg-[#DFFAF6] rounded-xl p-4 text-center">
+        <div class="text-2xl font-semibold">${cubicleData.totalSlots}</div>
+        <div class="text-sm text-gray-500">lugares totais</div>
+      </div>
+      <div class="flex-1 bg-[#DFFAF6] rounded-xl p-4 text-center">
+        <div class="text-2xl font-semibold">€${cubicleData.pricePerHour.toFixed(2)}</div>
+        <div class="text-sm text-gray-500">por hora</div>
+      </div>
+    `;
+
+    pricePerHour = cubicleData.pricePerHour;
+    slotsData = cubicleData.slots;
+
+    updateUI();
+  } catch(err) {
+    console.error("Failed to load cubicle:", err);
+  }
 }
 
+// -------------------------
+// RENDER FUNCTIONS
+// -------------------------
+function renderSlots() {
+  slotGrid.innerHTML = "";
+  slotsData.forEach(slot => {
+    const b = document.createElement("button");
+    b.className = "aspect-square rounded-3xl flex flex-col items-center justify-center " +
+      (selectedSlot === slot.id
+        ? "bg-gradient-to-br from-[#6CF7EB] to-[#69DCFF]"
+        : "bg-[#DFFAF6]");
+    b.innerHTML = `🚲<span>${slot.id}</span>`;
+    b.onclick = () => { selectedSlot = slot.id; updateUI(); };
+    slotGrid.appendChild(b);
+  });
+}
 
-        btn.innerHTML = `
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" 
-          viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M5.5 17a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7zm13 0a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7zM5.5 17h13M12 17l-3-7h6l-3 7z"/>
-          </svg>
-          <span class="text-xs font-bold mt-1">${slot.id}</span>
-        `;
+function renderDays() {
+  dayButtons.innerHTML = "";
+  days.forEach(d => {
+    const b = document.createElement("button");
+    b.textContent = d;
+    b.className = selectedDay === d
+      ? "px-4 py-2 rounded-full bg-[#2F3A3A] text-white"
+      : "px-4 py-2 rounded-full bg-[#DFFAF6]";
+    b.onclick = () => { selectedDay = d; updateUI(); };
+    dayButtons.appendChild(b);
+  });
+}
 
-        btn.onclick = () => {
-          selectedSlot = slot.id;
-          updateUI();
-        };
+async function loadReservationsForDay() {
+  if (!selectedDay) return;
+  const res = await fetch(`http://localhost:3000/reservations/cubicle/${cubeId}?day=${selectedDay}`);
+  reservationsForDay = await res.json();
+}
 
-        grid.appendChild(btn);
-      });
-    }
+async function renderTimes() {
+  await loadReservationsForDay();
+  timeButtons.innerHTML = "";
 
-    function renderDays() {
-      const wrap = document.getElementById("dayButtons");
-      wrap.innerHTML = "";
-      days.forEach(day => {
-        const btn = document.createElement("button");
-        btn.className = selectedDay === day
-          ? "px-4 py-2 rounded-lg bg-gray-900 text-white font-bold"
-          : "px-4 py-2 rounded-lg bg-gray-200 text-gray-800 font-bold hover:bg-gray-300";
-        btn.textContent = day;
-        btn.onclick = () => { selectedDay = day; updateUI(); };
-        wrap.appendChild(btn);
-      });
-    }
-
-    function renderTimes() {
-  const wrap = document.getElementById("timeButtons");
-  wrap.innerHTML = "";
-
-  times.forEach(time => {
-    const { start, end } = buildDateTime(selectedDay, time, selectedDuration);
+  times.forEach(t => {
+    const { start, end } = buildDateTime(selectedDay, t, selectedDuration);
 
     const blocked = reservationsForDay.some(r =>
       r.slot === selectedSlot &&
@@ -213,67 +187,84 @@
       new Date(r.endDateTime) > start
     );
 
-    const btn = document.createElement("button");
+    const b = document.createElement("button");
+    b.textContent = t;
 
-    if (blocked) {
-      btn.className = "py-2 rounded-lg bg-gray-300 text-gray-500 cursor-not-allowed";
-      btn.disabled = true;
-    } else if (selectedTime === time) {
-      btn.className = "py-2 rounded-lg bg-green-300 font-bold";
+    if (blocked || !selectedSlot) {
+      b.disabled = true;
+      b.className = "py-2 rounded-full bg-gray-300 text-gray-500 cursor-not-allowed";
+    } else if (selectedTime === t) {
+      b.className = "py-2 rounded-full bg-gradient-to-r from-[#6CF7EB] to-[#69DCFF]";
     } else {
-      btn.className = "py-2 rounded-lg bg-gray-200 hover:bg-gray-300 font-bold";
+      b.className = "py-2 rounded-full bg-[#DFFAF6]";
     }
 
-    btn.textContent = time;
-    btn.onclick = () => {
-      selectedTime = time;
-      updateUI();
-    };
-
-    wrap.appendChild(btn);
+    b.onclick = () => { selectedTime = t; updateUI(); };
+    timeButtons.appendChild(b);
   });
 }
 
+function renderDuration() {
+  durationButtons.innerHTML = "";
+  [1,2,3,4,5].forEach(h => {
+    const b = document.createElement("button");
+    b.textContent = h + "h";
+    b.className = selectedDuration === h
+      ? "flex-1 py-3 rounded-full bg-[#2F3A3A] text-white"
+      : "flex-1 py-3 rounded-full bg-[#DFFAF6]";
+    b.onclick = () => { selectedDuration = h; updateUI(); };
+    durationButtons.appendChild(b);
+  });
+}
 
-    function renderDuration() {
-      const wrap = document.getElementById("durationButtons");
-      wrap.innerHTML = "";
-      [1,2,3,4,5].forEach(hours => {
-        const btn = document.createElement("button");
-        btn.className = selectedDuration === hours
-          ? "flex-1 py-3 rounded-lg bg-green-400 text-white font-bold"
-          : "flex-1 py-3 rounded-lg bg-gray-200 text-gray-800 font-bold hover:bg-gray-300";
-        btn.textContent = hours + "h";
-        btn.onclick = () => { selectedDuration = hours; updateUI(); };
-        wrap.appendChild(btn);
-      });
-    }
+function updatePrice() {
+  totalPrice.textContent = "€" + (selectedDuration * pricePerHour).toFixed(2);
+}
 
-    function updatePrice() {
-      document.getElementById("totalPrice").innerText = "€" + (selectedDuration * pricePerHour).toFixed(2);
-    }
+function updateReserveButton() {
+  if (selectedSlot && selectedTime && selectedDay) {
+    reserveBtn.disabled = false;
+    reserveBtn.className = "px-6 py-4 rounded-full bg-[#69DCFF] text-[#2F3A3A] font-bold";
+  } else {
+    reserveBtn.disabled = true;
+    reserveBtn.className = "px-6 py-4 rounded-full bg-[#69DCFF] text-[#2F3A3A] font-bold opacity-50 cursor-not-allowed";
+  }
+}
 
-   const reserveBtn = document.getElementById("reserveBtn");
+function buildDateTime(day, time, duration) {
+  const dayIndex = days.indexOf(day);
+  const hour = parseInt(time);
+  const now = new Date();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - now.getDay() + 1);
 
+  const start = new Date(monday);
+  start.setDate(start.getDate() + dayIndex);
+  start.setHours(hour,0,0,0);
+
+  const end = new Date(start);
+  end.setHours(end.getHours() + duration);
+
+  return { start, end };
+}
+
+// -------------------------
+// RESERVE BUTTON LOGIC
+// -------------------------
 reserveBtn.onclick = async () => {
-  let user = JSON.parse(localStorage.getItem("user"));
-  if (!user) return alert("Login required!");
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return alert("Login required");
 
- const { start, end } = buildDateTime(
-  selectedDay,
-  selectedTime,
-  selectedDuration
-);
+  const { start, end } = buildDateTime(selectedDay, selectedTime, selectedDuration);
 
-const body = {
-  userId: user._id,
-  cubicleId: cubeId,
-  slot: selectedSlot,
-  startDateTime: start,
-  endDateTime: end,
-  price: selectedDuration * pricePerHour
-};
-
+  const body = {
+    userId: user._id,
+    cubicleId: cubeId,
+    slot: selectedSlot,
+    startDateTime: start,
+    endDateTime: end,
+    price: selectedDuration * pricePerHour
+  };
 
   const res = await fetch("http://localhost:3000/reservations", {
     method: "POST",
@@ -282,74 +273,27 @@ const body = {
   });
 
   if (res.ok) {
-    alert("Reservation created!");
-    window.location.href = "profile.html";
+    window.location.href = "confirmation.html";
   } else {
-    alert("Failed to reserve.");
+    alert("Failed to reserve");
   }
 };
 
-function updateReserveButton() {
-  const btn = document.getElementById("reserveBtn");
-
-const canReserve = selectedSlot && selectedTime && selectedDay;
-
-  if (canReserve) {
-    btn.disabled = false;
-    btn.className = "px-4 py-3 rounded-xl font-bold bg-green-500 text-white";
-  } else {
-    btn.disabled = true;
-    btn.className = "px-4 py-3 rounded-xl font-bold bg-gray-400 text-white cursor-not-allowed";
-  }
-}
-
-function buildDateTime(day, time, duration) {
-  const dayIndex = days.indexOf(day); // Mon = 0
-  const hour = parseInt(time);
-
-  const now = new Date();
-  const monday = new Date(now.setDate(now.getDate() - now.getDay() + 1));
-
-  const start = new Date(monday);
-  start.setDate(start.getDate() + dayIndex);
-  start.setHours(hour, 0, 0, 0);
-
-  const end = new Date(start);
-  end.setHours(end.getHours() + duration);
-
-  return { start, end };
-}
-
-
-async function loadReservationsForDay() {
-  if (!selectedDay) return;
-
-  const res = await fetch(
-    `http://localhost:3000/reservations/cubicle/${cubeId}?day=${selectedDay}`
-  );
-
-  reservationsForDay = await res.json();
-}
-
-
-
-
-
-    async function updateUI() {
+// -------------------------
+// MAIN UPDATE FUNCTION
+// -------------------------
+async function updateUI() {
   renderSlots();
   renderDays();
-  await loadReservationsForDay();
-  renderTimes();
+  await renderTimes();
   renderDuration();
   updatePrice();
   updateReserveButton();
 }
 
-
-    // INITIAL LOAD
-    loadCubicle();
-
-  </script>
+// INITIAL LOAD
+loadCubicle();
+</script>
 
 </body>
 </html>

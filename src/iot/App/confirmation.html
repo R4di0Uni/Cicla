@@ -1,135 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Booking Confirmation</title>
+  <title>Reserva Confirmada</title>
 
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    body {
-      background: linear-gradient(160deg, #f5f5f5 0%, #e5e7eb 100%);
-    }
-  </style>
 </head>
 
-<body class="min-h-screen flex justify-center items-center p-4">
+<body class="min-h-screen bg-[#F5FEFF] flex justify-center">
 
-  <div class="bg-white w-full max-w-sm rounded-2xl shadow-xl p-6 relative">
+<!-- APP FRAME -->
+<div class="w-full max-w-[430px] min-h-screen bg-white">
 
-    <!-- Logo -->
-    <div class="flex justify-center mb-6">
-      <h1 class="text-2xl font-bold">Cicla</h1>
+  <!-- HEADER -->
+  <div class="bg-gradient-to-br from-[#6CF7EB] via-[#69DCFF] to-[#5BC6FF]">
+
+    <!-- TOP BAR -->
+    <div class="flex items-center justify-between px-6 pt-6">
+      <button onclick="location.href='map.html'"
+        class="w-10 h-10 rounded-full bg-white/40
+               flex items-center justify-center backdrop-blur">
+        ←
+      </button>
+
+      <img src="./assets/cicla-bikeep-logo.png"
+           alt="Cicla"
+           class="h-8"/>
     </div>
 
-    <!-- Success Icon -->
-    <div class="flex flex-col items-center text-center">
-
-      <div class="relative mb-6">
-        <div class="w-24 h-24 rounded-full bg-white shadow-lg flex items-center justify-center">
-          <!-- Check Icon -->
-          <svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" stroke-width="2"
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M9 12l2 2l4 -4m6 2a9 9 0 1 1 -18 0a9 9 0 0 1 18 0z" />
-          </svg>
-        </div>
-
-        <div class="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
-          <!-- Bike Icon -->
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2"
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M5.5 17a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7zm13 0a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7zM5.5 17h13M12 17l-3-7h6l-3 7z" />
-          </svg>
-        </div>
+    <!-- TITLE -->
+    <div class="px-6 pt-10 pb-12 text-center">
+      <div class="mx-auto w-24 h-24 rounded-full bg-white shadow-lg
+                  flex items-center justify-center mb-6">
+        <!-- Check -->
+        <svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" stroke-width="2"
+             viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12l2 2l4-4m6 2a9 9 0 1 1-18 0a9 9 0 0 1 18 0z"/>
+        </svg>
       </div>
 
-      <h1 class="text-2xl font-bold mb-1">Booking Confirmed!</h1>
-      <p class="text-gray-500 text-sm mb-6">Your bike parking spot is reserved</p>
-
-      <!-- Booking Info -->
-      <div class="w-full bg-gray-50 rounded-2xl shadow p-5 mb-6">
-        <div class="space-y-4">
-
-          <!-- Location -->
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-green-200 flex items-center justify-center">
-              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M12 21s8-7.333 8-13A8 8 0 1 0 4 8c0 5.667 8 13 8 13z" />
-              </svg>
-            </div>
-            <div class="text-left">
-              <p class="font-bold text-gray-900 text-sm">Cicla Box – Avenida da Liberdade</p>
-              <p class="text-xs text-gray-500">Slot #3</p>
-            </div>
-          </div>
-
-          <!-- Time -->
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-green-200 flex items-center justify-center">
-              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M12 6v6l4 2M12 22a10 10 0 1 1 0-20a10 10 0 0 1 0 20z" />
-              </svg>
-            </div>
-            <div class="text-left">
-              <p class="font-bold text-gray-900 text-sm">Mon, 10h</p>
-              <p class="text-xs text-gray-500">2 hours</p>
-            </div>
-          </div>
-
-          <div class="h-px bg-gray-300"></div>
-
-          <div class="flex items-center justify-between font-medium">
-            <span class="text-sm text-gray-500">Amount paid</span>
-            <span class="text-lg font-bold text-gray-900">€1.00</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Access Code -->
-      <div class="w-full bg-gray-50 rounded-2xl shadow p-5 mb-8">
-        <div class="flex items-center gap-2 mb-4">
-          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2"
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M3 3h4v4H3V3zm0 7h4v4H3v-4zm7-7h4v4h-4V3zm0 7h4v4h-4v-4zm7-7h4v4h-4V3zm0 7h4v4h-4v-4zM3 17h4v4H3v-4zm7 0h4v4h-4v-4zm7 0h4v4h-4v-4z" />
-          </svg>
-          <h3 class="text-sm font-bold text-gray-900">Access Code</h3>
-        </div>
-
-        <div class="w-32 h-32 mx-auto mb-4 bg-gray-900 rounded-xl flex items-center justify-center">
-          <p class="text-white">[QR]</p>
-        </div>
-
-        <p class="text-center font-mono text-2xl tracking-widest font-bold text-gray-900">
-          ABC123
-        </p>
-
-        <p class="text-center text-xs text-gray-500 mt-2">
-          Show this code at the Cicla Box to unlock your slot
-        </p>
-      </div>
-
-      <!-- Buttons -->
-      <div class="space-y-3 w-full">
-        <button class="w-full py-3 bg-green-600 text-white rounded-xl font-bold">
-          GO TO MY BOOKINGS
-        </button>
-
-        <button class="w-full py-3 border border-green-600 text-green-600 rounded-xl font-bold">
-          Back to Map
-        </button>
-      </div>
-
+      <h1 class="text-3xl font-bold text-[#2F3A3A] mb-2">
+        Reserva confirmada!
+      </h1>
+      <p class="text-[#2F3A3A]/70 text-lg">
+        O seu lugar está garantido
+      </p>
     </div>
   </div>
+
+  <!-- CONTENT -->
+  <div class="px-6 py-8 space-y-8">
+
+    <!-- RESUMO -->
+    <div class="bg-white rounded-3xl shadow-lg p-6 space-y-5">
+
+      <h2 class="text-lg font-bold text-[#2F3A3A]">
+        Detalhes da reserva
+      </h2>
+
+      <!-- Location -->
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#E6FFFB] flex items-center justify-center">
+          📍
+        </div>
+        <div>
+          <p class="font-semibold">Cicla Box – Avenida da Liberdade</p>
+          <p class="text-sm text-gray-500">Lugar nº 3</p>
+        </div>
+      </div>
+
+      <!-- Time -->
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#E6FFFB] flex items-center justify-center">
+          🕒
+        </div>
+        <div>
+          <p class="font-semibold">Segunda-feira, 10h</p>
+          <p class="text-sm text-gray-500">2 horas</p>
+        </div>
+      </div>
+
+      <div class="h-px bg-gray-200"></div>
+
+      <div class="flex items-center justify-between">
+        <span class="text-lg text-gray-600">Valor pago</span>
+        <span class="text-3xl font-bold text-[#2F3A3A]">€1.00</span>
+      </div>
+    </div>
+
+    <!-- ACCESS CODE -->
+    <div class="bg-white rounded-3xl shadow-lg p-6 space-y-4">
+
+      <h2 class="text-lg font-bold text-[#2F3A3A] flex items-center gap-2">
+        🔐 Código de acesso
+      </h2>
+
+      <div class="w-36 h-36 mx-auto bg-[#2F3A3A] rounded-2xl
+                  flex items-center justify-center">
+        <span class="text-white text-lg">[QR]</span>
+      </div>
+
+      <p class="text-center font-mono text-3xl tracking-widest
+                font-bold text-[#2F3A3A]">
+        ABC123
+      </p>
+
+      <p class="text-center text-sm text-gray-500">
+        Mostre este código na Cicla Box para desbloquear
+      </p>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="space-y-4">
+      <button
+        onclick="location.href='profile.html'"
+        class="w-full py-5 rounded-full text-lg font-bold text-white
+               bg-gradient-to-r from-[#6CF7EB] to-[#69DCFF]
+               shadow-lg active:scale-95 transition">
+        VER AS MINHAS RESERVAS
+      </button>
+
+      <button
+        onclick="location.href='map.html'"
+        class="w-full py-5 rounded-full text-lg font-bold
+               text-[#69DCFF] border-2 border-[#69DCFF]
+               active:scale-95 transition">
+        Voltar ao mapa
+      </button>
+    </div>
+
+  </div>
+</div>
 
 </body>
 </html>

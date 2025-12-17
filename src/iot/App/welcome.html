@@ -1,55 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cicla Bikeep</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300">
+<body class="min-h-screen flex justify-center">
 
-  <div class="max-w-md mx-auto min-h-screen bg-white shadow-xl relative overflow-hidden">
+  <!-- APP FRAME -->
+  <div class="relative w-full max-w-[430px] min-h-screen overflow-hidden">
 
-    <!-- Decorative shapes -->
-    <div class="absolute -top-4 -left-4 w-36 h-36 bg-black/10 rounded-lg blur-xl"></div>
-    <div class="absolute -top-12 -right-10 w-56 h-80 bg-black/10 rounded-3xl blur-2xl"></div>
-    <div class="absolute bottom-40 -left-4 w-56 h-12 bg-black/10 rounded-full blur-md"></div>
-    <div class="absolute -bottom-16 -right-10 w-40 h-72 bg-black/10 rounded-xl rotate-180 blur-xl"></div>
+    <!-- BACKGROUND GRADIENT -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#E6FFFB] via-[#6CF7EB] to-[#69DCFF]"></div>
 
-    <!-- Main structure -->
-    <div class="relative flex flex-col min-h-screen px-8 py-14">
+    <!-- CONTENT -->
+    <div class="relative z-10 flex flex-col min-h-screen justify-between px-8 py-12">
 
-      <!-- Logo section -->
-      <div class="flex-1 flex flex-col items-center justify-center text-center">
-        
-        <!-- Placeholder floating logo -->
-        <div class="mb-10 animate-bounce">
-          <div class="w-32 h-32 bg-gray-800 rounded-full"></div>
-        </div>
+      <!-- LOGO + TEXT -->
+      <div class="flex flex-col items-center mt-20 gap-8 text-center">
 
-        <p class="text-xl font-bold text-gray-800 tracking-wide max-w-xs">
-          Park your bike with safety
+        <!-- LOGO -->
+        <img
+          src="./assets/cicla-bikeep-logo.png"
+          alt="Cicla Bikeep"
+          class="w-[300px]"
+        />
+
+        <!-- TEXT -->
+        <p class="text-[#2F3A3A] text-2xl leading-snug font-semibold">
+          Park your bike<br />
+          with safety
         </p>
       </div>
 
-      <!-- Buttons -->
-      <div class="space-y-4 pb-10">
-            <a href="signIn.html" 
-            class="block w-full py-3 bg-black text-white text-lg font-bold text-center rounded-lg hover:bg-gray-900">
-            Sign in
+      <!-- BUTTONS (FUNCTIONALITY PRESERVED) -->
+      <div class="w-full space-y-5 mb-6">
+
+        <a
+          href="signIn.html"
+          class="block text-center w-full py-5 rounded-full
+                 bg-gradient-to-r from-[#6CF7EB] to-[#69DCFF]
+                 text-[#2F3A3A] text-xl font-semibold shadow-md
+                 hover:opacity-90 transition"
+        >
+          Sign in
         </a>
 
-        <a 
-        href="signUp.html" 
-        class="w-full block text-center py-3 border-2 border-black text-black text-lg font-bold rounded-lg hover:bg-black hover:text-white transition"
-        >   
-        Sign up
+        <a
+          href="signUp.html"
+          class="block text-center w-full py-5 rounded-full
+                 border-2 border-[#6CF7EB]
+                 text-[#2F3A3A] text-xl font-semibold bg-transparent
+                 hover:bg-[#E6FFFB] transition"
+        >
+          Sign up
         </a>
 
       </div>
-
-      <!-- Bottom soft wave -->
-      <div class="absolute left-0 bottom-0 w-full h-20 bg-gray-200/50 rounded-t-full blur-lg"></div>
     </div>
 
   </div>

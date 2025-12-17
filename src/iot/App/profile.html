@@ -1,348 +1,234 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile</title>
+  <title>Cicla – Perfil</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Heroicons -->
-  <script src="https://unpkg.com/heroicons@2.1.1/outline/index.js"></script>
-
-  <style>
-    /* Simple gradient replacement */
-    .gradient-main {
-      background: linear-gradient(to bottom right, #d9f99d, #86efac);
-    }
-    .gradient-button {
-      background: linear-gradient(to right, #bef264, #86efac);
-    }
-  </style>
 </head>
 
-<body class="bg-gray-100 flex justify-center">
-  <div class="w-full max-w-sm bg-white min-h-screen shadow-lg relative">
+<body class="bg-[#E6FFFB] flex justify-center">
 
-    <!-- Header -->
-    <div class="relative gradient-main pb-10 pt-12 px-6">
-      <div class="flex items-center justify-between mb-6">
-        <button  onclick="history.back()" class="w-10 h-10 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center">
-          <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <h1 class="font-bold text-gray-800 text-lg">Cicla</h1>
+<!-- APP FRAME -->
+<div class="relative w-full max-w-[430px] min-h-screen bg-[#E6FFFB] flex flex-col">
+
+  <!-- HEADER -->
+  <div class="bg-gradient-to-br from-[#6CF7EB] to-[#69DCFF] px-6 pt-10 pb-12 relative">
+
+    <button onclick="history.back()"
+      class="absolute left-4 top-8 w-10 h-10 rounded-full bg-white/40 flex items-center justify-center">
+      ←
+    </button>
+
+    <img src="./assets/cicla-bikeep-logo.png"
+         class="absolute right-4 top-8 w-20" />
+
+    <div class="mt-12 flex items-center gap-4">
+      <div class="w-16 h-16 rounded-full bg-white shadow flex items-center justify-center text-2xl">
+        👤
       </div>
-
-      <!-- Profile info -->
-      <div class="flex items-center gap-4">
-        <div class="w-16 h-16 rounded-full bg-white shadow flex items-center justify-center">
-          <svg class="w-8 h-8 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A8 8 0 1116.97 5.93M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        </div>
-        <div>
-          <h1 id="profileName" class="text-xl font-bold text-gray-800"></h1>
-          <p id="profileEmail" class="text-sm text-gray-700"></p>
-
-        </div>
+      <div>
+        <h1 id="profileName" class="text-xl font-bold text-[#2F3A3A]"></h1>
+        <p id="profileEmail" class="text-sm text-[#2F3A3A]/70"></p>
       </div>
     </div>
-
-    <!-- Quick actions -->
-    <div class="px-6 -mt-6">
-      <div class="bg-white rounded-2xl shadow p-4">
-        <div class="grid grid-cols-3 gap-4 text-center">
-
-          <!-- My Bikes -->
-          <button class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-100">
-            <div class="w-10 h-10 rounded-full bg-lime-300 flex items-center justify-center">
-              <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  d="M5.5 17a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm13 0a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM5.5 14.5H10l2-3h4M12 7l2 4m-2-4H9" />
-              </svg>
-            </div>
-            <span class="text-xs font-bold text-gray-800">My Bikes</span>
-          </button>
-
-          <!-- Payment -->
-          <button class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-100">
-            <div class="w-10 h-10 rounded-full bg-lime-300 flex items-center justify-center">
-              <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  d="M3 10h18M3 6h18M3 14h18M3 18h18" />
-              </svg>
-            </div>
-            <span class="text-xs font-bold text-gray-800">Payment</span>
-          </button>
-
-          <!-- Settings -->
-          <button class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-100">
-            <div class="w-10 h-10 rounded-full bg-lime-300 flex items-center justify-center">
-              <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  d="M12 6V4m0 16v-2m8-6h2M4 12H2m14.95 7.95l1.414 1.414M7.636 7.636L6.222 6.222m12.728 0l1.414 1.414M7.636 16.364l-1.414 1.414" />
-              </svg>
-            </div>
-            <span class="text-xs font-bold text-gray-800">Settings</span>
-          </button>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="px-6 mt-6">
-
-      <div class="flex gap-2 mb-4">
-        <button class="flex-1 py-2 rounded-xl gradient-button text-gray-900 font-bold">
-          Upcoming
-        </button>
-        <button class="flex-1 py-2 rounded-xl bg-gray-200 text-gray-500 font-bold">
-          Past
-        </button>
-      </div>
-
-      <!-- Booking list -->
-      <div class="space-y-3 pb-28">
-
-        <!-- Booking 1 -->
-        <div class="bg-gray-100 rounded-2xl p-4">
-          <div class="flex items-start justify-between mb-3">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    d="M5.5 17a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm13 0a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM5.5 14.5H10l2-3h4M12 7l2 4m-2-4H9" />
-                </svg>
-              </div>
-              <div>
-                <p class="font-bold text-gray-800 text-sm">Cicla Box – Avenida da Liberdade</p>
-                <p class="text-xs text-gray-500">Slot #3</p>
-              </div>
-            </div>
-            <span class="text-xs font-bold text-green-700 bg-green-200 px-2 py-1 rounded-full">
-              Active
-            </span>
-          </div>
-
-          <div class="flex items-center gap-4 text-xs text-gray-600">
-            <div class="flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  d="M8 7V3m8 4V3m-9 9h10m-11 9h12a2 2 0 0 0 2-2V7H4v14a2 2 0 0 0 2 2z" />
-              </svg>
-              Dec 6, 2024
-            </div>
-            <div class="flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  d="M12 6v6l4 2" />
-              </svg>
-              10h • 2h
-            </div>
-            <div class="ml-auto font-bold text-gray-800">€1.00</div>
-          </div>
-
-          <div class="mt-3 pt-3 border-t flex gap-2">
-            <button class="flex-1 border border-gray-400 text-gray-900 py-1 rounded-lg text-sm font-bold">
-              View Code
-            </button>
-            <button class="flex-1 border border-red-300 text-red-600 py-1 rounded-lg text-sm font-bold">
-              Cancel
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Bottom nav -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t px-6 py-3 max-w-sm mx-auto">
-      <div class="flex items-center justify-between">
-
-        <button class="flex flex-col items-center text-gray-600 hover:text-black">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 6v4h4" />
-          </svg>
-          <span class="text-xs font-bold">Map</span>
-        </button>
-
-        <button class="flex flex-col items-center text-green-700">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M5.121 17.804A8 8 0 1116.97 5.93M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <span class="text-xs font-bold">Profile</span>
-        </button>
-
-        <button onclick="logout()" class="flex flex-col items-center text-gray-600 hover:text-red-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
-          </svg>
-          <span class="text-xs font-bold">Logout</span>
-        </button>
-
-      </div>
-    </div>
-
-  </div>
-  <script>
-    // DEV ONLY — simulate current time
-const DEV_NOW = new Date("2025-12-15T09:00:00");
-
-function now() {
-  return DEV_NOW; // replace with new Date() in production
-}
-
-let user = JSON.parse(localStorage.getItem("user"));
-if (!user) window.location.href = "signIn.html";
-
-document.getElementById("profileName").innerText = user.name;
-document.getElementById("profileEmail").innerText = user.email;
-
-async function loadBookings() {
-  const res = await fetch(`http://localhost:3000/reservations/user/${user._id}`);
-  const bookings = await res.json();
-
-
-
-  const container = document.querySelector(".space-y-3");
-  container.innerHTML = "";
-
-  bookings.forEach(b => {
-    const div = document.createElement("div");
-    const start = new Date(b.startDateTime);
-    const end = new Date(b.endDateTime);
-
-    const dateStr = start.toLocaleDateString();
-    const timeStr = `${start.getHours()}:00 – ${end.getHours()}:00`;
-    div.className = "bg-gray-100 rounded-2xl p-4";
-
-    div.innerHTML = `
-  <!-- Booking header (clickable) -->
-  <div onclick="toggleDropdown('${b._id}')" class="flex items-start justify-between mb-3 cursor-pointer">
-    <div>
-      <p class="font-bold text-gray-800">${b.cubicleId?.name || "Parking Spot"}</p>
-      <p class="text-xs text-gray-500">Slot #${b.slot}</p>
-    </div>
-    <span class="text-xs font-bold ${
-  isActive(b)
-    ? "text-green-700 bg-green-200"
-    : "text-gray-600 bg-gray-300"
-} px-2 py-1 rounded-full">
-  ${isActive(b) ? "Active" : "Past"}
-</span>
-
   </div>
 
-  <!-- Booking info -->
-  <div class="text-xs text-gray-600">
-  ${dateStr} • ${timeStr}
-  <div class="font-bold mt-1 text-gray-800">€${b.price.toFixed(2)}</div>
+  <!-- QUICK ACTIONS -->
+  <div class="px-6 mt-6">
+    <div class="bg-white rounded-3xl shadow p-5">
+      <div class="grid grid-cols-3 gap-4 text-center">
+
+        <button class="flex flex-col items-center gap-2">
+          <div class="w-12 h-12 rounded-2xl bg-[#DFFAF6] flex items-center justify-center text-xl">
+            🚲
+          </div>
+          <span class="text-xs font-semibold text-[#2F3A3A]">
+            As minhas bicicletas
+          </span>
+        </button>
+
+        <button class="flex flex-col items-center gap-2">
+          <div class="w-12 h-12 rounded-2xl bg-[#DFFAF6] flex items-center justify-center text-xl">
+            💳
+          </div>
+          <span class="text-xs font-semibold text-[#2F3A3A]">
+            Pagamentos
+          </span>
+        </button>
+
+        <button class="flex flex-col items-center gap-2">
+          <div class="w-12 h-12 rounded-2xl bg-[#DFFAF6] flex items-center justify-center text-xl">
+            ⚙️
+          </div>
+          <span class="text-xs font-semibold text-[#2F3A3A]">
+            Definições
+          </span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RESERVAS -->
+  <div class="px-6 mt-10 flex-1 overflow-y-auto">
+    <h2 class="font-bold text-[#2F3A3A] mb-4">Reservas</h2>
+
+    <div id="bookingList" class="space-y-4"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="border-t bg-white px-6 py-3">
+    <div class="flex justify-between">
+
+      <a href="home.html" class="flex flex-col items-center text-[#2F3A3A]/60">
+        📍
+        <span class="text-xs font-semibold">Mapa</span>
+      </a>
+
+      <div class="flex flex-col items-center text-[#2F3A3A]">
+        👤
+        <span class="text-xs font-semibold">Perfil</span>
+      </div>
+
+      <button onclick="logout()" class="flex flex-col items-center text-[#2F3A3A]/60">
+        ⎋
+        <span class="text-xs font-semibold">Sair</span>
+      </button>
+
+    </div>
+  </div>
+
 </div>
 
+<!-- LOGIC -->
+<script>
+  const rawUser = localStorage.getItem("user");
+  let user = null;
 
-  <!-- Dropdown -->
-<div id="dropdown-${b._id}" class="hidden mt-3 border-t pt-3 space-y-2">
-  ${isWithinReservation(b) ? `
- ${
-  b.isUnlocked
-    ? `<button onclick="lockCubicle('${b._id}', ${b.slot})"
-        class="w-full bg-red-100 text-red-700 py-2 rounded-lg font-bold">
-        🔒 Lock Cubicle
-      </button>`
-    : `<button onclick="unlockCubicle('${b._id}', ${b.slot})"
-        class="w-full bg-green-100 text-green-700 py-2 rounded-lg font-bold">
-        🔓 Unlock Cubicle
-      </button>`
-}
-
-` : `
-  <div class="text-xs text-center text-gray-500 font-bold">
-    Outside reservation time
-  </div>
-`}
-
-
-
-  <div class="text-center text-xs font-bold ${
-    b.isUnlocked ? "text-green-600" : "text-gray-600"
-  }">
-    Status: ${b.isUnlocked ? "Unlocked" : "Locked"}
-  </div>
-</div>
-
-`;
-
-    container.appendChild(div);
-  });
-}
-
-function toggleDropdown(id) {
-  document.querySelectorAll("[id^='dropdown-']").forEach(d => {
-    if (d.id !== `dropdown-${id}`) d.classList.add("hidden");
-  });
-
-  const dropdown = document.getElementById(`dropdown-${id}`);
-  dropdown.classList.toggle("hidden");
-}
-
-function isActive(b) {
-  return isWithinReservation(b);
-}
-
-
-function isWithinReservation(b) {
-  const current = now();
-  return current >= new Date(b.startDateTime) &&
-         current <= new Date(b.endDateTime);
-}
-
-
-
-
-function logout() {
-  localStorage.removeItem("user"); 
-  window.location.href = "signIn.html"; 
-}
-
-async function unlockCubicle(bookingId, slot) {
-  if (Number(slot) !== 1) {
-    alert("Only Slot 1 has a physical lock");
-    return;
+  try {
+    user = rawUser && rawUser !== "undefined" ? JSON.parse(rawUser) : null;
+  } catch {
+    user = null;
   }
 
-  await fetch(`http://localhost:3000/reservations/${bookingId}/unlock`, {
-    method: "POST"
-  });
-
-  loadBookings();
-}
-
-async function lockCubicle(bookingId, slot) {
-  if (Number(slot) !== 1) {
-    alert("Only Slot 1 has a physical lock");
-    return;
+  if (!user) {
+    localStorage.removeItem("user");
+    alert("Tem de iniciar sessão primeiro.");
+    window.location.href = "signIn.html";
   }
 
-  await fetch(`http://localhost:3000/reservations/${bookingId}/lock`, {
-    method: "POST"
-  });
+  document.getElementById("profileName").innerText =
+    user.name || user.username || "Utilizador";
+
+  document.getElementById("profileEmail").innerText =
+    user.email || "Sem email";
+
+  // DEV TIME (replace with new Date() in production)
+  const DEV_NOW = new Date("2025-12-17T09:30:00");
+  const now = () => DEV_NOW;
+
+  async function loadBookings() {
+    const res = await fetch(
+      `http://localhost:3000/reservations/user/${user._id}`
+    );
+    const bookings = await res.json();
+
+    const container = document.getElementById("bookingList");
+    container.innerHTML = "";
+
+    bookings.forEach(b => {
+      const start = new Date(b.startDateTime);
+      const end = new Date(b.endDateTime);
+
+      const card = document.createElement("div");
+      card.className = "bg-white rounded-3xl p-5 shadow";
+
+      card.innerHTML = `
+        <div onclick="toggleDropdown('${b._id}')"
+             class="flex items-center justify-between cursor-pointer mb-3">
+
+          <div>
+            <p class="font-bold text-sm text-[#2F3A3A]">
+              ${b.cubicleId?.name || "Cicla Box"}
+            </p>
+            <p class="text-xs text-[#2F3A3A]/60">
+              Lugar #${b.slot}
+            </p>
+          </div>
+
+          <span class="px-3 py-1 rounded-full text-xs font-bold
+            ${isActive(b)
+              ? "bg-[#DFFAF6] text-[#2F3A3A]"
+              : "bg-gray-200 text-gray-500"}">
+            ${isActive(b) ? "Ativa" : "Passada"}
+          </span>
+        </div>
+
+        <div id="dropdown-${b._id}" class="hidden border-t pt-3 text-xs text-[#2F3A3A]/80">
+          ${start.toLocaleDateString()} • ${start.getHours()}h – ${end.getHours()}h
+          <div class="font-bold mt-1 text-[#2F3A3A]">€${b.price.toFixed(2)}</div>
+
+          ${
+            isWithinReservation(b)
+              ? (b.isUnlocked
+                  ? `<button onclick="lockCubicle('${b._id}', ${b.slot})"
+                      class="w-full mt-3 py-2 rounded-xl border border-red-300 text-red-600 font-semibold">
+                      🔒 Bloquear
+                    </button>`
+                  : `<button onclick="unlockCubicle('${b._id}', ${b.slot})"
+                      class="w-full mt-3 py-2 rounded-xl border border-[#69DCFF] text-[#2F3A3A] font-semibold">
+                      🔓 Desbloquear
+                    </button>`
+                )
+              : `<div class="mt-3 text-center text-gray-400 font-semibold">
+                  Fora do horário da reserva
+                </div>`
+          }
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  function toggleDropdown(id) {
+    document.querySelectorAll("[id^='dropdown-']").forEach(d => {
+      if (d.id !== `dropdown-${id}`) d.classList.add("hidden");
+    });
+    document.getElementById(`dropdown-${id}`).classList.toggle("hidden");
+  }
+
+  function isWithinReservation(b) {
+    const current = now();
+    return current >= new Date(b.startDateTime) &&
+           current <= new Date(b.endDateTime);
+  }
+
+  function isActive(b) {
+    return isWithinReservation(b);
+  }
+
+  function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "signIn.html";
+  }
+
+  async function unlockCubicle(id, slot) {
+    if (Number(slot) !== 1) return alert("Apenas o Lugar 1 tem fechadura");
+    await fetch(`http://localhost:3000/reservations/${id}/unlock`, { method: "POST" });
+    loadBookings();
+  }
+
+  async function lockCubicle(id, slot) {
+    if (Number(slot) !== 1) return alert("Apenas o Lugar 1 tem fechadura");
+    await fetch(`http://localhost:3000/reservations/${id}/lock`, { method: "POST" });
+    loadBookings();
+  }
 
   loadBookings();
-}
-
-
-
-
-
-
-loadBookings();
 </script>
-
 
 </body>
 </html>

@@ -1,130 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cicla Map</title>
 
-  <!-- Tailwind CDN -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <style>
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+
     .animate-pulse-glow {
       animation: pulseGlow 2s infinite;
     }
     @keyframes pulseGlow {
       0% { box-shadow: 0 0 0 0 rgba(255,87,87,0.6); }
-      100% { box-shadow: 0 0 0 12px rgba(255,87,87,0); }
+      100% { box-shadow: 0 0 0 14px rgba(255,87,87,0); }
     }
   </style>
 </head>
 
-<body class="bg-lime-200">
+<body class="min-h-screen flex justify-center bg-[#E6FFFB]">
 
-<div class="relative min-h-screen overflow-hidden">
+<!-- APP FRAME -->
+<div class="relative w-full max-w-[430px] min-h-screen overflow-hidden">
 
-  <!-- Background -->
-  <div class="absolute inset-0 bg-gradient-to-b from-lime-300/50 to-green-300/30"></div>
+  <!-- MAP -->
+  <div id="map" class="absolute inset-0 z-0"></div>
 
-  <!-- Map Grid -->
-  <svg class="absolute inset-0 w-full h-full opacity-30 text-gray-700">
-    <defs>
-      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="0.5"/>
-      </pattern>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#grid)" />
-  </svg>
-
-  <!-- USER LOCATION PULSE -->
-  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
-    <div class="w-6 h-6 rounded-full bg-red-400 border-4 border-white shadow-lg animate-pulse-glow"></div>
+  <!-- USER LOCATION -->
+  <div class="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+    <div class="w-6 h-6 rounded-full bg-red-400 border-4 border-white animate-pulse-glow"></div>
   </div>
 
-  <!-- Map Pins Container -->
-  <div id="pins"></div>
+  <!-- TOP BAR -->
+  <div class="absolute top-6 left-4 right-4 z-20 flex justify-between items-center">
+    <img src="./assets/cicla-bikeep-logo.png" class="w-24" />
 
-  <!-- Top Bar -->
-  <div class="relative z-20 px-4 pt-10 pb-4 flex items-center justify-between">
-    <h1 class="font-bold text-xl text-green-800">CICLA</h1>
-
-    <div class="flex items-center gap-2">
-      <div class="px-3 py-1.5 rounded-full bg-white shadow flex items-center gap-2">
-        <span class="text-green-700 font-semibold">📍 Lisboa</span>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow">
+        📍 Lisboa
       </div>
 
-      <button onclick="window.location.href='profile.html'"
-        class="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center">
-  <span class="text-gray-800 text-lg">👤</span>
-</button>
-
+      <a href="profile.html"
+         class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center">
+        👤
+      </a>
     </div>
   </div>
 
-  <!-- Filters -->
-  <div class="relative z-20 px-4 flex gap-2">
+  <!-- FILTERS -->
+  <div class="absolute top-28 left-4 right-4 z-20 flex gap-2">
     <button id="filterNearest"
-            class="px-4 py-2 rounded-xl bg-green-400 text-white font-bold">
+            class="flex-1 px-4 py-2 rounded-xl bg-green-400 text-white font-bold">
       📍 Nearest
     </button>
     <button id="filterAvailable"
-            class="px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border border-gray-300">
+            class="flex-1 px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border">
       🔍 Most available
     </button>
   </div>
 
-  <!-- Bottom Sheet -->
+  <!-- BOTTOM SHEET -->
   <div id="sheet"
-       class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-xl z-30 transition-all duration-300 translate-y-[60%]">
-    <div id="sheetContent" class="p-6"></div>
+       class="absolute bottom-0 left-0 right-0 z-30 bg-white
+              rounded-t-3xl shadow-xl px-6 pt-4 pb-8
+              transition-all duration-300 translate-y-[60%]">
+    <div id="sheetContent"></div>
   </div>
 
 </div>
 
+<!-- SCRIPT -->
 <script>
+let map;
 let cubes = [];
+let markers = [];
 let filterMode = "nearest";
 
+// Init map
+map = L.map('map', { zoomControl: false })
+  .setView([38.7208, -9.1466], 15);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap'
+}).addTo(map);
+
+// Load cubicles
 async function loadCubicles() {
   const res = await fetch("http://localhost:3000/cubicles");
   cubes = await res.json();
-  renderList();
   renderPins();
+  renderList();
 }
 
+// Sort
 function sortCubes() {
   if (filterMode === "available")
     return [...cubes].sort((a, b) => b.freeSlots - a.freeSlots);
-
-  return cubes; // later you can sort by real distance
+  return cubes;
 }
 
+// Pins on map
+function renderPins() {
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  cubes.forEach(c => {
+    const marker = L.marker([c.lat, c.lng]).addTo(map);
+    marker.on("click", () => showCubeByObj(c));
+    markers.push(marker);
+  });
+}
+
+// Bottom list
 function renderList() {
   let html = `
+    <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
     <h3 class="text-lg font-bold mb-4">Nearby Cicla Boxes</h3>
-    <div class="space-y-3 max-h-48 overflow-y-auto">
+    <div class="space-y-3 max-h-52 overflow-y-auto">
   `;
 
   sortCubes().forEach(c => {
     html += `
-      <button onclick="window.location.href='cubeDetails.html?id=${c._id}'"
-        class="w-full flex items-center justify-between p-3 bg-gray-100 rounded-xl hover:bg-gray-200">
-        
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center 
-            ${c.freeSlots ? "bg-green-500" : "bg-gray-400"}">
-            🚲
-          </div>
-          <div>
-            <p class="font-bold">${c.name}</p>
-            <p class="text-sm text-gray-500">
-  ${c.freeSlots} slots free now
-</p>
-
-          </div>
+      <button onclick="showCube('${c._id}')"
+        class="w-full flex items-center justify-between p-3 bg-gray-100 rounded-xl">
+        <div>
+          <p class="font-bold">${c.name}</p>
+          <p class="text-sm text-gray-500">${c.freeSlots} slots free</p>
         </div>
-        
-        <span class="font-bold text-green-600">${c.address}</span>
+        <span class="font-bold text-green-600">€${c.pricePerHour.toFixed(2)}</span>
       </button>
     `;
   });
@@ -132,94 +148,62 @@ function renderList() {
   sheetContent.innerHTML = html + "</div>";
 }
 
-
-  function showCubeByObj(cube) {
-    selectedCube = cube;
-    sheet.classList.remove("translate-y-[60%]");
-
-    sheetContent.innerHTML = `
-      <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
-
-      <h3 class="text-lg font-bold">${cube.name}</h3>
-      <p class="text-sm text-gray-500 mb-3">📍 ${cube.address}</p>
-
-      <div class="flex gap-4 mb-6">
-        <div class="flex-1 bg-gray-100 rounded-xl p-3 text-center">
-          <div class="text-2xl font-bold">${cube.freeSlots}</div>
-          <div class="text-xs text-gray-500">free slots</div>
-        </div>
-        <div class="flex-1 bg-gray-100 rounded-xl p-3 text-center">
-          <div class="text-2xl font-bold">${cube.totalSlots}</div>
-          <div class="text-xs text-gray-500">total slots</div>
-        </div>
-        <div class="flex-1 bg-lime-200 rounded-xl p-3 text-center">
-          <div class="text-2xl font-bold">€${cube.pricePerHour.toFixed(2)}</div>
-          <div class="text-xs text-gray-600">per hour</div>
-        </div>
-      </div>
-
-      <button class="w-full py-3 rounded-xl text-white font-bold
-        ${cube.freeSlots? "bg-green-600":"bg-gray-400"}"
-        ${cube.freeSlots === 0 ? "disabled" : ""}>
-        ${cube.freeSlots? "SELECT SLOT":"NO SLOTS AVAILABLE"}
-      </button>
-    `;
-  }
-
-  function showCube(id) {
+// Show cube
+function showCube(id) {
   const cube = cubes.find(c => c._id === id);
   if (!cube) return;
   showCubeByObj(cube);
 }
 
+function showCubeByObj(cube) {
+  sheet.classList.remove("translate-y-[60%]");
 
-  // Render pins
-  function renderPins() {
-  const pins = document.getElementById("pins");
-  pins.innerHTML = "";
+  sheetContent.innerHTML = `
+    <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
 
-  cubes.forEach((c, i) => {
-    const el = document.createElement("button");
-    el.className = "absolute transform -translate-x-1/2 -translate-y-1/2 z-10 hover:scale-110 transition";
-    el.style.top = (25 + i * 15) + "%";
-    el.style.left = (20 + i * 18) + "%";
+    <h2 class="text-xl font-semibold mb-1">${cube.name}</h2>
+    <p class="text-gray-500 text-sm mb-5">${cube.address}</p>
 
-    el.onclick = () => window.location.href = `cubeDetails.html?id=${c._id}`;
-
-    el.innerHTML = `
-      <div class="relative ${c.freeSlots ? "" : "opacity-50"}">
-        <div class="w-12 h-12 rounded-full flex items-center justify-center shadow
-          ${c.freeSlots ? "bg-green-500" : "bg-gray-400"}">
-          🚲
-        </div>
-        <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white text-xs font-bold flex items-center justify-center">
-          ${c.freeSlots}
-        </span>
+    <div class="flex gap-4 mb-6">
+      <div class="flex-1 bg-[#E6FFFB] rounded-xl p-4 text-center">
+        <div class="text-2xl font-semibold">${cube.freeSlots}</div>
+        <div class="text-sm text-gray-500">free</div>
       </div>
-    `;
+      <div class="flex-1 bg-[#E6FFFB] rounded-xl p-4 text-center">
+        <div class="text-2xl font-semibold">${cube.totalSlots}</div>
+        <div class="text-sm text-gray-500">total</div>
+      </div>
+      <div class="flex-1 bg-[#E6FFFB] rounded-xl p-4 text-center">
+        <div class="text-2xl font-semibold">€${cube.pricePerHour.toFixed(2)}</div>
+        <div class="text-sm text-gray-500">/hour</div>
+      </div>
+    </div>
 
-    pins.appendChild(el);
-  });
+    <button onclick="window.location.href='cubeDetails.html?id=${cube._id}'"
+      class="w-full py-5 rounded-full bg-gradient-to-r
+             from-[#6CF7EB] to-[#69DCFF]
+             text-[#2F3A3A] text-xl font-semibold">
+      ESCOLHER LUGAR
+    </button>
+  `;
 }
 
-
-  // Filters
-  document.getElementById("filterNearest").onclick = () => {
-    filterMode = "nearest";
-    document.getElementById("filterNearest").className = "px-4 py-2 rounded-xl bg-green-400 text-white font-bold";
-    document.getElementById("filterAvailable").className = "px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border border-gray-300";
-    renderList();
-  };
-
-  document.getElementById("filterAvailable").onclick = () => {
-    filterMode = "available";
-    document.getElementById("filterAvailable").className = "px-4 py-2 rounded-xl bg-green-400 text-white font-bold";
-    document.getElementById("filterNearest").className = "px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border border-gray-300";
-    renderList();
-  };
-
+// Filters
+filterNearest.onclick = () => {
+  filterMode = "nearest";
+  filterNearest.className = "flex-1 px-4 py-2 rounded-xl bg-green-400 text-white font-bold";
+  filterAvailable.className = "flex-1 px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border";
   renderList();
-  loadCubicles();
+};
+
+filterAvailable.onclick = () => {
+  filterMode = "available";
+  filterAvailable.className = "flex-1 px-4 py-2 rounded-xl bg-green-400 text-white font-bold";
+  filterNearest.className = "flex-1 px-4 py-2 rounded-xl bg-white text-gray-800 font-bold border";
+  renderList();
+};
+
+loadCubicles();
 </script>
 
 </body>

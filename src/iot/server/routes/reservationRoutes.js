@@ -139,4 +139,30 @@ router.get("/cubicle/:cubicleId", async (req, res) => {
   }
 });
 
+
+router.get("/cubicle/:cubicleId/availability", async (req, res) => {
+  const { cubicleId } = req.params;
+  const { datetime } = req.query;
+
+  if (!datetime) {
+    return res.status(400).json({ error: "datetime required" });
+  }
+
+  const targetTime = new Date(datetime);
+
+  try {
+    const reservations = await Reservation.find({
+      cubicleId,
+      status: "active",
+      startDateTime: { $lte: targetTime },
+      endDateTime: { $gte: targetTime }
+    });
+
+    res.json(reservations); // only the slots that are OCCUPIED
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 module.exports = router;

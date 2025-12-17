@@ -33,6 +33,8 @@
   let latestSensors = {};
 let buffer = [];
 let intrusionHits = 0;
+let intrusionDetected = false;
+
 
 mqttClient.subscribe("esp32/sensors");
 
@@ -59,6 +61,7 @@ mqttClient.on("message", async (topic, message) => {
   }
 
   // --------------------
+  
   // 2️⃣ AI buffer
   // --------------------
   buffer.push({
@@ -91,6 +94,8 @@ mqttClient.on("message", async (topic, message) => {
       console.log("🚨 INTRUSION DETECTED");
       mqttClient.publish("esp32/cmd", "beep");
       lastBeep = now;
+       intrusionDetected = true;
+
     }
 
     intrusionHits = 0;
@@ -100,10 +105,16 @@ mqttClient.on("message", async (topic, message) => {
   buffer = [];
 });
 
+app.get("/intrusion", (req, res) => {
+  res.json({ intrusion: intrusionDetected });
+  intrusionDetected = false; // reset after read
+});
+
+
 
 
   // --------------------
-  // API ROUTES
+  // API ROUTESm
   // --------------------
   app.use("/auth", authRoutes);
   app.use("/cubicles", cubicleRoutes);
